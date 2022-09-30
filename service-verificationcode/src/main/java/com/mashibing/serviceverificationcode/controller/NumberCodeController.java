@@ -1,5 +1,7 @@
 package com.mashibing.serviceverificationcode.controller;
 
+import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.response.NumberCodeResponse;
 import net.sf.json.JSONObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,20 +18,19 @@ import javax.websocket.server.PathParam;
 public class NumberCodeController {
 
     @GetMapping("/numberCode/{size}")
-    public String numberCode(@PathVariable("size") int size) {
+    public ResponseResult numberCode(@PathVariable("size") int size) {
 
         System.out.println("the size is : " + size);
 
-        JSONObject result = new JSONObject();
-        result.put("code", 1);
-        result.put("message", "success");
+        //生成size位验证码
+        int numberCode = (int) ((Math.random() * 9 + 1) * Math.pow(10, size - 1));
 
-        JSONObject data = new JSONObject();
-        data.put("numberCode", 123456);
+        NumberCodeResponse numberCodeResponse = new NumberCodeResponse();
+        numberCodeResponse.setNumberCode(numberCode);
 
-        result.put("data", data);
 
-        return result.toString();
+        return ResponseResult.success(numberCodeResponse);
 
     }
+
 }
