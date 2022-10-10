@@ -28,6 +28,8 @@ public class NumberCodeController {
         NumberCodeResponse numberCodeResponse = new NumberCodeResponse();
         numberCodeResponse.setNumberCode(numberCode);
 
+        System.out.println("生成的验证码是："+numberCode);
+
 
         return ResponseResult.success(numberCodeResponse);
 

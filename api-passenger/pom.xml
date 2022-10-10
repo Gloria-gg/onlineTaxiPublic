@@ -17,6 +17,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.mashibing</groupId>
+            <artifactId>internal-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- nacos依赖 -->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -27,6 +33,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <!-- loadbalancer -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
     </dependencies>
 
