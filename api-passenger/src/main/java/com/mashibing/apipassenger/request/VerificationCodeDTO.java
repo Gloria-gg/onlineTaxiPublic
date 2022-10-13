@@ -14,4 +14,6 @@ import lombok.ToString;
 @ToString
 public class VerificationCodeDTO {
     private String passengerPhone;
+
+    private String verificationCode;
 }
