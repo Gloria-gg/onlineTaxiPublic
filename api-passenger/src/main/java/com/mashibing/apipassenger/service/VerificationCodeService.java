@@ -1,10 +1,12 @@
 package com.mashibing.apipassenger.service;
 
 import com.mashibing.apipassenger.remote.ServiceVerificationCodeClient;
+import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.NumberCodeResponse;
 import com.mashibing.internalcommon.response.TokenResponse;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,19 @@ public class VerificationCodeService {
     private ServiceVerificationCodeClient serviceVerificationCodeClient;
 
     /**
+     * 根据乘客电话号码进行redis的key生成
+     * 因为有拷贝行为，所以对有拷贝行为都生成一个方法
+     * 万一之后改变规则，也好进行统一更改
+     * （算是一个开发中的小技巧）
+     *
+     * @param passengerPhone
+     * @return
+     */
+    private String generateRedisKeyByPassengerPhone(String passengerPhone) {
+        return verificationCodePrefix + passengerPhone;
+    }
+
+    /**
      * 该方法获取乘客手机号，生成一个六位验证码
      *
      * @param passengerPhone
@@ -43,7 +58,7 @@ public class VerificationCodeService {
 
         //存入redis
         //key：前缀+手机号   value：验证码   ttl：过期时间，在redis设置中统一设置
-        String key = verificationCodePrefix + passengerPhone;
+        String key = generateRedisKeyByPassengerPhone(passengerPhone);
         //存入redis中
         stringRedisTemplate.opsForValue().set(key, numberCode + "", 2, TimeUnit.MINUTES);
 
@@ -63,11 +78,26 @@ public class VerificationCodeService {
      * @return
      */
     public ResponseResult checkVerificationCode(String passengerPhone, String verificationCode) {
-        //根据手机号去redis中获取对应验证码
-        System.out.println("根据手机号去redis中获取对应验证码");
+        //根据手机号去redis中获取对应验证码。第一步：生成key
+        String key = generateRedisKeyByPassengerPhone(passengerPhone);
+
+        //第二步：根据key获取value
+        String redisCode = stringRedisTemplate.opsForValue().get(key);
+
+        System.out.println("从redis中获取到的验证码是：" + redisCode);
 
         //redis验证码与输入验证码进行校验
         System.out.println("redis验证码与输入验证码进行校验");
+        if (StringUtils.isBlank(redisCode)) {
+            //验证码为空，提示L验证码不正确
+            return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getMessage());
+        }
+
+        if (!verificationCode.trim().equals(redisCode.trim())) {
+            //若用户输入验证码和redis中验证码不一致，也进行报错提示
+            return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getMessage());
+        }
+
 
         //若原来有用户，那么返回登录token；若没有用户，那么直接插入一条新数据
         System.out.println("若原来有用户，那么返回登录token；若没有用户，那么直接插入一条新数据");
