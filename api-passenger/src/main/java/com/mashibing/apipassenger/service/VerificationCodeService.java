@@ -99,7 +99,7 @@ public class VerificationCodeService {
         }
 
 
-        //若原来有用户，那么返回登录token；若没有用户，那么直接插入一条新数据
+        //若原来有用户，那么返回登录token；若没有用户，那么直接插入一条新数据,这里需要调用另一个服务
         System.out.println("若原来有用户，那么返回登录token；若没有用户，那么直接插入一条新数据");
 
         //颁发token令牌
