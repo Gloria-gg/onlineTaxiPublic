@@ -1,8 +1,10 @@
 package com.mashibing.apipassenger.service;
 
+import com.mashibing.apipassenger.remote.ServicePassengerUserClient;
 import com.mashibing.apipassenger.remote.ServiceVerificationCodeClient;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.request.VerificationCodeDTO;
 import com.mashibing.internalcommon.response.NumberCodeResponse;
 import com.mashibing.internalcommon.response.TokenResponse;
 import net.sf.json.JSONObject;
@@ -31,6 +33,9 @@ public class VerificationCodeService {
 
     @Autowired
     private ServiceVerificationCodeClient serviceVerificationCodeClient;
+
+    @Autowired
+    private ServicePassengerUserClient servicePassengerUserClient;
 
     /**
      * 根据乘客电话号码进行redis的key生成
@@ -100,7 +105,9 @@ public class VerificationCodeService {
 
 
         //若原来有用户，那么返回登录token；若没有用户，那么直接插入一条新数据,这里需要调用另一个服务
-        System.out.println("若原来有用户，那么返回登录token；若没有用户，那么直接插入一条新数据");
+        VerificationCodeDTO verificationCodeDTO = new VerificationCodeDTO();
+        verificationCodeDTO.setPassengerPhone(passengerPhone);
+        servicePassengerUserClient.logOrRegister(verificationCodeDTO);
 
         //颁发token令牌
         System.out.println("颁发token令牌");
