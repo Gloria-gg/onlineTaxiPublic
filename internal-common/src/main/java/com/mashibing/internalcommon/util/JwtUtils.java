@@ -3,7 +3,10 @@ package com.mashibing.internalcommon.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
+import javax.print.DocFlavor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,14 +22,21 @@ public class JwtUtils {
     //盐，进行加密，自己随便写的一个字符串
     private static final String SIGN = "CHUJSIFYFBMDJ@HJDH*&7yr87";
 
+    //进行生成以及解析token时用到的key
+    private static final String JWT_KEY = "passengerPhone";
+
 
     /**
      * 生成token
      *
-     * @param map 使用map方便
+     * @param passengerPhone 使用map方便
      * @return
      */
-    public static String generatorToken(Map<String, String> map) {
+    public static String generatorToken(String passengerPhone) {
+        //根据实际情况进行map设置
+        Map<String, String> map = new HashMap<>();
+        map.put(JWT_KEY, passengerPhone);
+
         //定义token过期时间
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
@@ -51,13 +61,17 @@ public class JwtUtils {
         return token;
     }
 
-    public static void main(String[] args) {
-        Map<String, String> map = new HashMap<>();
-        map.put("name","gg");
-        map.put("age","18");
-        String s = generatorToken(map);
-        System.out.println(s);
+
+    /**
+     * 解析传进来的token
+     * 对于本项目来说，只有一种返回结果，就死passengerPhone
+     * 所以返回值直接就是string类型
+     *
+     * @param token
+     * @return
+     */
+    public static String parseToken(String token) {
+        DecodedJWT verify = JWT.require(Algorithm.HMAC256(SIGN)).build().verify(token);
+        return verify.getClaim(JWT_KEY).toString();
     }
-
-
 }
