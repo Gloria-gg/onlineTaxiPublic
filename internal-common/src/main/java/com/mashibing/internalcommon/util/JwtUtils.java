@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.mashibing.internalcommon.dto.TokenResult;
 
 import javax.print.DocFlavor;
 import java.util.Calendar;
@@ -23,19 +24,22 @@ public class JwtUtils {
     private static final String SIGN = "CHUJSIFYFBMDJ@HJDH*&7yr87";
 
     //进行生成以及解析token时用到的key
-    private static final String JWT_KEY = "passengerPhone";
+    private static final String JWT_KEY_PHONE = "phone";
+
+    private static final String JWT_KEY_IDENTITY = "identity";
 
 
     /**
      * 生成token
      *
-     * @param passengerPhone 使用map方便
+     * @param phone 使用map方便
      * @return
      */
-    public static String generatorToken(String passengerPhone) {
-        //根据实际情况进行map设置
+    public static String generateToken(String phone, String identity) {
+        //根据实际情况进行map设置，除了设置手机号还要一个身份标示：是乘客还是司机
         Map<String, String> map = new HashMap<>();
-        map.put(JWT_KEY, passengerPhone);
+        map.put(JWT_KEY_PHONE, phone);
+        map.put(JWT_KEY_IDENTITY, identity);
 
         //定义token过期时间
         Calendar calendar = Calendar.getInstance();
@@ -70,8 +74,13 @@ public class JwtUtils {
      * @param token
      * @return
      */
-    public static String parseToken(String token) {
+    public static TokenResult parseToken(String token) {
         DecodedJWT verify = JWT.require(Algorithm.HMAC256(SIGN)).build().verify(token);
-        return verify.getClaim(JWT_KEY).toString();
+
+        TokenResult tokenResult = new TokenResult();
+        tokenResult.setPhone(verify.getClaim(JWT_KEY_PHONE).toString());
+        tokenResult.setIdentity(verify.getClaim(JWT_KEY_IDENTITY).toString());
+
+        return tokenResult;
     }
 }
