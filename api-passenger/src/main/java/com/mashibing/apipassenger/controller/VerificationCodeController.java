@@ -48,7 +48,6 @@ public class VerificationCodeController {
         String passengerPhone = verificationCodeDTO.getPassengerPhone();
         String verificationCode = verificationCodeDTO.getVerificationCode();
 
-        System.out.println("手机号：" + passengerPhone + ", 验证码：" + verificationCode);
         return verificationCodeService.checkVerificationCode(passengerPhone,verificationCode);
     }
 }

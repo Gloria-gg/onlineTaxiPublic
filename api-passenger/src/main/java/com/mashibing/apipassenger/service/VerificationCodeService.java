@@ -91,10 +91,7 @@ public class VerificationCodeService {
         //第二步：根据key获取value
         String redisCode = stringRedisTemplate.opsForValue().get(key);
 
-        System.out.println("从redis中获取到的验证码是：" + redisCode);
-
         //redis验证码与输入验证码进行校验
-        System.out.println("redis验证码与输入验证码进行校验");
         if (StringUtils.isBlank(redisCode)) {
             //验证码为空，提示L验证码不正确
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(), CommonStatusEnum.VERIFICATION_CODE_ERROR.getMessage());
