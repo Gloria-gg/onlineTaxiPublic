@@ -56,8 +56,8 @@ public class JwtUtils {
                 }
         );
 
-        //整合过期时间
-        builder.withExpiresAt(time);
+        //整合过期时间,这里暂时先不设置有效期，因为在redis中设置了有效期是60天
+        //builder.withExpiresAt(time);
 
         //builder生成token
         String token = builder.sign(Algorithm.HMAC256(SIGN));

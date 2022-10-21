@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,11 @@ public class VerificationCodeService {
      * 存入redis的验证码的key的前缀
      */
     private String verificationCodePrefix = "passenger_verification_code_";
+
+    /**
+     * 存入redis的token的前缀
+     */
+    private String tokenKeyPrefix = "token_";
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -50,6 +56,17 @@ public class VerificationCodeService {
      */
     private String generateRedisKeyByPassengerPhone(String passengerPhone) {
         return verificationCodePrefix + passengerPhone;
+    }
+
+    /**
+     * 生成token存储到redis中的key
+     *
+     * @param phone
+     * @param identity
+     * @return
+     */
+    private String generateTokenKey(String phone, String identity) {
+        return tokenKeyPrefix + phone + "_" + identity;
     }
 
     /**
@@ -110,6 +127,11 @@ public class VerificationCodeService {
 
         //颁发token令牌,使用JwtUtils进行令牌颁发,暂定"1"是乘客，后面需要一个枚举类进行重新定义
         String token = JwtUtils.generateToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+
+        //把token存到redis中
+        String tokenKey = generateTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+        stringRedisTemplate.opsForValue().set(tokenKey, token, 60, TimeUnit.DAYS);
+
 
         //设置返回值
         TokenResponse tokenResponse = new TokenResponse();
