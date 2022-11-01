@@ -32,6 +32,9 @@ public class JwtUtils {
     //token 类型
     private static final String JWT_TOKEN_TYPE = "tokenType";
 
+    //token过期时间，增加这个参数，为了不同时间生成不同token
+    private static final String JWT_TOKEN_TIME = "tokenTime";
+
 
     /**
      * 生成token
@@ -46,10 +49,8 @@ public class JwtUtils {
         map.put(JWT_KEY_IDENTITY, identity);
         map.put(JWT_TOKEN_TYPE, tokenType);
 
-        //定义token过期时间
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 1);
-        Date time = calendar.getTime();
+        //定义token里面时间，为了生成不一样的token
+        map.put(JWT_TOKEN_TIME, Calendar.getInstance().getTime().toString());
 
         //定义builder来进行token创建
         JWTCreator.Builder builder = JWT.create();
@@ -105,6 +106,6 @@ public class JwtUtils {
 
         }
 
-        return null;
+        return tokenResult;
     }
 }
