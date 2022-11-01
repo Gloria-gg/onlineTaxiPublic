@@ -28,6 +28,9 @@ public class JwtUtils {
 
     private static final String JWT_KEY_IDENTITY = "identity";
 
+    //token 类型
+    private static final String JWT_TOKEN_TYPE = "tokenType";
+
 
     /**
      * 生成token
@@ -35,11 +38,12 @@ public class JwtUtils {
      * @param phone 使用map方便
      * @return
      */
-    public static String generateToken(String phone, String identity) {
+    public static String generateToken(String phone, String identity, String tokenType) {
         //根据实际情况进行map设置，除了设置手机号还要一个身份标示：是乘客还是司机
         Map<String, String> map = new HashMap<>();
         map.put(JWT_KEY_PHONE, phone);
         map.put(JWT_KEY_IDENTITY, identity);
+        map.put(JWT_TOKEN_TYPE, tokenType);
 
         //定义token过期时间
         Calendar calendar = Calendar.getInstance();

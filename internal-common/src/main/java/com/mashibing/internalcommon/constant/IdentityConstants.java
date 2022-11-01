@@ -5,7 +5,7 @@ package com.mashibing.internalcommon.constant;
  * @Description: 用户对应identity类
  * @Date: Created in 10:32 AM 10/20/22
  */
-public class IdentityConstant {
+public class IdentityConstants {
 
     /**
      * 乘客身份标识码

@@ -3,7 +3,8 @@ package com.mashibing.apipassenger.service;
 import com.mashibing.apipassenger.remote.ServicePassengerUserClient;
 import com.mashibing.apipassenger.remote.ServiceVerificationCodeClient;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
-import com.mashibing.internalcommon.constant.IdentityConstant;
+import com.mashibing.internalcommon.constant.IdentityConstants;
+import com.mashibing.internalcommon.constant.TokenConstants;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.VerificationCodeDTO;
 import com.mashibing.internalcommon.response.NumberCodeResponse;
@@ -13,7 +14,6 @@ import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -94,16 +94,21 @@ public class VerificationCodeService {
         servicePassengerUserClient.logOrRegister(verificationCodeDTO);
 
         //颁发token令牌,使用JwtUtils进行令牌颁发,暂定"1"是乘客，后面需要一个枚举类进行重新定义
-        String token = JwtUtils.generateToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+        String accessToken = JwtUtils.generateToken(passengerPhone, IdentityConstants.PASSENGER_IDENTITY, TokenConstants.ACCESS_TOKEN_TYPE);
+        String refreshToken = JwtUtils.generateToken(passengerPhone, IdentityConstants.PASSENGER_IDENTITY, TokenConstants.REFRESH_TOKEN_TYPE);
 
         //把token存到redis中
-        String tokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
-        stringRedisTemplate.opsForValue().set(tokenKey, token, 60, TimeUnit.DAYS);
+        String accessTokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, IdentityConstants.PASSENGER_IDENTITY, TokenConstants.ACCESS_TOKEN_TYPE);
+        String refreshTokenKey = RedisPrefixUtils.generateTokenKey(passengerPhone, IdentityConstants.PASSENGER_IDENTITY, TokenConstants.REFRESH_TOKEN_TYPE);
+        //这里设置refreshToken要比accessToken多一些时间，这样可以利用refreshToken来设置新的双token，用户体验好
+        stringRedisTemplate.opsForValue().set(accessTokenKey, accessToken, 30, TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(refreshTokenKey, refreshToken, 31, TimeUnit.DAYS);
 
 
         //设置返回值
         TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setToken(token);
+        tokenResponse.setAccessToken(accessToken);
+        tokenResponse.setRefreshToken(refreshToken);
 
         return ResponseResult.success(tokenResponse);
     }
