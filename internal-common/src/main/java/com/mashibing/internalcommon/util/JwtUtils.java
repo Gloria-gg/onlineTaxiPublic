@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.mashibing.internalcommon.dto.TokenResult;
+import com.mashibing.internalcommon.response.TokenResponse;
 
 import javax.print.DocFlavor;
 import java.util.Calendar;
@@ -72,7 +73,7 @@ public class JwtUtils {
 
     /**
      * 解析传进来的token
-     * 对于本项目来说，只有一种返回结果，就死passengerPhone
+     * 对于本项目来说，只有一种返回结果，就是passengerPhone
      * 所以返回值直接就是string类型
      *
      * @param token
@@ -86,5 +87,24 @@ public class JwtUtils {
         tokenResult.setIdentity(verify.getClaim(JWT_KEY_IDENTITY).asString());
 
         return tokenResult;
+    }
+
+    /**
+     * 校验token，主要是判断token是否异常
+     *
+     * @param token
+     * @return
+     */
+    public static TokenResult checkToken(String token) {
+        TokenResult tokenResult = null;
+
+        try {
+            tokenResult = parseToken(token);
+
+        } catch (Exception e) {
+
+        }
+
+        return null;
     }
 }

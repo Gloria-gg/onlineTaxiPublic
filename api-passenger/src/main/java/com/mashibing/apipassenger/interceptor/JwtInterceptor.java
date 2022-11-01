@@ -36,26 +36,11 @@ public class JwtInterceptor implements HandlerInterceptor {
         String token = request.getHeader("Authorization");
 
         //使用之前自己写的工具进行token解析，在解析过程中出现异常进行捕获
-        TokenResult tokenResult = null;
-        try {
-            tokenResult = JwtUtils.parseToken(token);
-        } catch (SignatureVerificationException e) {
-            resultString = "token signature error!";
-            result = false;
-        } catch (TokenExpiredException e) {
-            resultString = "token time out!";
-            result = false;
-        } catch (AlgorithmMismatchException e) {
-            resultString = "token algorithm error!";
-            result = false;
-        } catch (Exception e) {
-            resultString = "token error!";
-            result = false;
-        }
+        TokenResult tokenResult = JwtUtils.checkToken(token);
 
         //从redis中获取token
         if (tokenResult == null) {
-            resultString = "token error!";
+            resultString = "token invaild!";
             result = false;
         } else {
             String identity = tokenResult.getIdentity();
@@ -67,15 +52,9 @@ public class JwtInterceptor implements HandlerInterceptor {
             String tokenRedis = stringRedisTemplate.opsForValue().get(tokenKey);
 
             //和redis中token进行比较，看是否是正确的token
-            if (StringUtils.isBlank(tokenRedis)) {
-                resultString = "token error!";
+            if ((StringUtils.isBlank(tokenRedis)) || (!token.trim().equals(tokenRedis.trim()))) {
+                resultString = "token invaild!";
                 result = false;
-            } else {
-                //不是空，那么判断两个token是否一致
-                if (!token.trim().equals(tokenRedis.trim())) {
-                    resultString = "token error!";
-                    result = false;
-                }
             }
         }
 
