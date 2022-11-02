@@ -29,7 +29,6 @@ public class TokenController {
     public ResponseResult refreshToken(@RequestBody TokenResponse tokenResponse) {
 
         String refreshTokenSrc = tokenResponse.getRefreshToken();
-        System.out.println("从客户端传进来的refreshTokenSrc是：" + refreshTokenSrc);
 
         return tokenService.refreshToken(refreshTokenSrc);
     }
