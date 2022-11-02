@@ -4,6 +4,7 @@ import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.VerificationCodeDTO;
 import com.mashibing.servicepassengeruser.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +28,18 @@ public class UserController {
      */
     @PostMapping(value = "/user")
     public ResponseResult logOrRegister(@RequestBody VerificationCodeDTO verificationCodeDTO) {
-
         return userService.logOrRegister(verificationCodeDTO.getPassengerPhone());
+    }
 
+
+    /**
+     * 通过手机号查询用户信息并返回
+     *
+     * @param verificationCodeDTO
+     * @return
+     */
+    @GetMapping("/user")
+    public ResponseResult getUserByPhone(@RequestBody VerificationCodeDTO verificationCodeDTO) {
+        return userService.getUserByPhone(verificationCodeDTO.getPassengerPhone());
     }
 }

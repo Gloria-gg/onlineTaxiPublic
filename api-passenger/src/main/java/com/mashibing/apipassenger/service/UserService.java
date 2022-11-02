@@ -2,6 +2,8 @@ package com.mashibing.apipassenger.service;
 
 import com.mashibing.internalcommon.dto.PassengerUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.dto.TokenResult;
+import com.mashibing.internalcommon.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,10 @@ public class UserService {
         log.info("access token:" + accessToken);
 
         //解析accessToken，获取手机号
+        TokenResult tokenResult = JwtUtils.checkToken(accessToken);
+        String phone = tokenResult.getPhone();
+
+        log.info("解析accessToken获取到的手机号是：" + phone);
 
         //根据手机号，获取用户信息
 

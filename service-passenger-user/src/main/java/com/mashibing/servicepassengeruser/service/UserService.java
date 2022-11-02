@@ -1,5 +1,6 @@
 package com.mashibing.servicepassengeruser.service;
 
+import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.PassengerUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.servicepassengeruser.mapper.PassengerUserMapper;
@@ -50,5 +51,26 @@ public class UserService {
 
 
         return ResponseResult.success();
+    }
+
+
+    /**
+     * 通过手机号查询用户信息并返回
+     *
+     * @param passengerPhone
+     * @return
+     */
+    public ResponseResult getUserByPhone(String passengerPhone) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("passenger_phone", passengerPhone);
+        List<PassengerUser> passengerUsers = passengerUserMapper.selectByMap(map);
+
+        //查询不出用户则返回用户信息不存在错误
+        if (passengerUsers.size() == 0) {
+            return ResponseResult.fail(CommonStatusEnum.USER_NOT_EXISTS.getCode(),
+                    CommonStatusEnum.USER_NOT_EXISTS.getMessage());
+        }
+
+        return ResponseResult.success(passengerUsers.get(0));
     }
 }
