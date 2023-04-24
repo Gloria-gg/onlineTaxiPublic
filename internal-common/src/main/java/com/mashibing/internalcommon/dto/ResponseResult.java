@@ -20,7 +20,7 @@ public class ResponseResult<T> {
     /**
      * 状态码1：成功；0：失败
      */
-    private int code;
+    private Integer code;
     /**
      * success；fail
      */

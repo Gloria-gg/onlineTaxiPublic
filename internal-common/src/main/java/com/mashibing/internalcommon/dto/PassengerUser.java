@@ -21,9 +21,9 @@ public class PassengerUser {
 
     private String passengerName;
 
-    private byte passengerGender;
+    private Byte passengerGender;
 
-    private byte state;
+    private Byte state;
 
     private String profilePhoto;
 }
