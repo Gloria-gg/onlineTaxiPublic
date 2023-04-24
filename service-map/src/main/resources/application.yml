@@ -1,2 +1,5 @@
 server:
   port: 8085
+
+amap:
+  key: c822c6e2c79ebd33327cf136934637e9
