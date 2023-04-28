@@ -8,11 +8,16 @@ package com.mashibing.internalcommon.constant;
 public class MapConfigConstants {
 
     /**
-     * 请求高德api接口的url
+     * 请求高德api接口的url，根据经纬度获取时长以及里程
      * https://restapi.amap.com/v3/direction/driving?origin=116.481028,39.989643&destination=116.465302,40.004717&extensions=base&output=json&key=c822c6e2c79ebd33327cf136934637e9
-     *
      */
     public static final String DIRECTION_URL = "https://restapi.amap.com/v3/direction/driving?origin=%s,%s&destination=%s,%s&extensions=%s&output=json&key=%s";
+
+    /**
+     * 请求高德api接口url，获取地点具体信息（城镇名称以及地市级等级等）
+     * https://restapi.amap.com/v3/config/district?keywords=北京&subdistrict=2&key=<用户的key>
+     */
+    public static final String DIC_DISTRICT_URL = "https://restapi.amap.com/v3/config/district?keywords=%s&subdistrict=%s&key=%s";
 
     /**
      * 路径规划返回结果json中表示是否正常的"status"值，0表示异常，1表示正常
