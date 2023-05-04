@@ -19,6 +19,6 @@ public class DicDistrictService {
     public ResponseResult dicDistrict(String keyWords) {
         mapDicDistrictClient.initDicDistrict(keyWords);
 
-        return null;
+        return ResponseResult.success();
     }
 }
