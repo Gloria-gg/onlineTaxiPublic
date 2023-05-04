@@ -1,7 +1,7 @@
 package com.mashibing.servicemap.service;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
-import com.mashibing.servicemap.remote.DicDistrictClient;
+import com.mashibing.servicemap.remote.MapDicDistrictClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +14,10 @@ import org.springframework.stereotype.Service;
 public class DicDistrictService {
 
     @Autowired
-    private DicDistrictClient dicDistrictClient;
+    private MapDicDistrictClient mapDicDistrictClient;
 
-    public ResponseResult initDicDistrict(String keyWords) {
-        dicDistrictClient.initDicDistrict(keyWords);
-
+    public ResponseResult dicDistrict(String keyWords) {
+        mapDicDistrictClient.initDicDistrict(keyWords);
 
         return null;
     }

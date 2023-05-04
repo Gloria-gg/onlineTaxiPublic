@@ -19,7 +19,7 @@ public class DicDistrictController {
     @GetMapping("/dic-district")
     public ResponseResult initDicDistrict(String keyWords) {
 
-        ResponseResult responseResult = dicDistrictService.initDicDistrict(keyWords);
+        ResponseResult responseResult = dicDistrictService.dicDistrict(keyWords);
         return responseResult;
     }
 }

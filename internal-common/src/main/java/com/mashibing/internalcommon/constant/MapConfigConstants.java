@@ -43,4 +43,29 @@ public class MapConfigConstants {
      * path数组中第一个元素中duration参数
      */
     public static final String DURATION = "duration";
+
+    /**
+     * 地图服务返回结果包含需要数据的第一层
+     */
+    public static final String DISTRICTS = "districts";
+
+    /**
+     * 地图服务中的adcode层
+     */
+    public static final String ADCODE = "adcode";
+
+    /**
+     * 地图服务中name（城市名称）层
+     */
+    public static final String CITY_NAME = "name";
+
+    /**
+     * 地图服务中level层
+     */
+    public static final String LEVEL = "level";
+
+    /**
+     * 地图服务中对应属性：street
+     */
+    public static final String STREET = "street";
 }
