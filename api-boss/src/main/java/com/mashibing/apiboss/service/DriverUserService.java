@@ -6,6 +6,8 @@ import com.mashibing.internalcommon.dto.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * @Author: Gloria
  * @Description:
@@ -19,4 +21,5 @@ public class DriverUserService {
     public ResponseResult addDriverUser(DriverUser driverUser) {
         return serviceDriverUserClient.addDriverUser(driverUser);
     }
+
 }
