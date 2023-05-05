@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Data
 public class DriverUser {
-    private Integer id;
+    private Long id;
 
     /**
      * 地区code，对应表格dic_district
@@ -46,17 +46,17 @@ public class DriverUser {
     /**
      * 获得驾照日期
      */
-    private LocalDateTime getDriverLicenseDate;
+    private LocalDate getDriverLicenseDate;
 
     /**
      * 驾照有效期起始
      */
-    private LocalDateTime driverLicenseOn;
+    private LocalDate driverLicenseOn;
 
     /**
      * 驾照有效期截止
      */
-    private LocalDateTime driverLicenseOff;
+    private LocalDate driverLicenseOff;
 
     /**
      * 是否巡游出租汽车：1：是；0：否
@@ -76,27 +76,27 @@ public class DriverUser {
     /**
      * 资格证发证日期
      */
-    private LocalDateTime networkCarIssueDate;
+    private LocalDate networkCarIssueDate;
 
     /**
      * 初次领取资格证日期
      */
-    private LocalDateTime getNetworkCarProofDate;
+    private LocalDate getNetworkCarProofDate;
 
     /**
      * 资格证有效期起始日期
      */
-    private LocalDateTime networkCarProofOn;
+    private LocalDate networkCarProofOn;
 
     /**
      * 资格证有效期截止日期
      */
-    private LocalDateTime networkCarProofOff;
+    private LocalDate networkCarProofOff;
 
     /**
      * 报备日期
      */
-    private LocalDateTime registerDate;
+    private LocalDate registerDate;
 
     /**
      * 服务类型：1：网络预约出租汽车；2：巡游出租汽车；3：私人小客车合乘
@@ -111,12 +111,12 @@ public class DriverUser {
     /**
      * 合同（协议）有效期起
      */
-    private LocalDateTime contractOn;
+    private LocalDate contractOn;
 
     /**
      * 合同（协议）有效期止
      */
-    private LocalDateTime contractOff;
+    private LocalDate contractOff;
 
     /**
      * 司机状态：0：有效；1：失效

@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * @Author: Gloria
  * @Description:
@@ -18,9 +20,19 @@ public class DriverUserService {
     @Autowired
     private DriverUserMapper driverUserMapper;
 
-    public ResponseResult test() {
-        DriverUser driverUser = driverUserMapper.selectById(1);
+    /**
+     * 添加司机信息
+     *
+     * @param driverUser
+     * @return
+     */
+    public ResponseResult addDriverUser(DriverUser driverUser) {
+        LocalDateTime now = LocalDateTime.now();
+        driverUser.setGmtCreate(now);
+        driverUser.setGmtModified(now);
 
-        return ResponseResult.success(driverUser);
+        driverUserMapper.insert(driverUser);
+
+        return ResponseResult.success("");
     }
 }

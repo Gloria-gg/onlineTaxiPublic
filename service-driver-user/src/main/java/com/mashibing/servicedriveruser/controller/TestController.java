@@ -17,9 +17,8 @@ public class TestController {
     private DriverUserService driverUserService;
 
     @GetMapping("/test")
-    public ResponseResult test() {
+    public String test() {
 
-
-        return driverUserService.test();
+        return "controller from service driver user!";
     }
 }
