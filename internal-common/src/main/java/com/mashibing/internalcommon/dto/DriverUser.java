@@ -2,6 +2,7 @@ package com.mashibing.internalcommon.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -28,7 +29,7 @@ public class DriverUser {
      */
     private Integer driverGender;
 
-    private Date driverBirthday;
+    private LocalDate driverBirthday;
 
     /**
      * 国籍，对应表dic_nation
@@ -45,17 +46,17 @@ public class DriverUser {
     /**
      * 获得驾照日期
      */
-    private Date getDriverLicenseDate;
+    private LocalDateTime getDriverLicenseDate;
 
     /**
      * 驾照有效期起始
      */
-    private Date driverLicenseOn;
+    private LocalDateTime driverLicenseOn;
 
     /**
      * 驾照有效期截止
      */
-    private Date driverLicenseOff;
+    private LocalDateTime driverLicenseOff;
 
     /**
      * 是否巡游出租汽车：1：是；0：否
@@ -75,27 +76,27 @@ public class DriverUser {
     /**
      * 资格证发证日期
      */
-    private Date networkCarIssueDate;
+    private LocalDateTime networkCarIssueDate;
 
     /**
      * 初次领取资格证日期
      */
-    private Date getNetworkCarProofDate;
+    private LocalDateTime getNetworkCarProofDate;
 
     /**
      * 资格证有效期起始日期
      */
-    private Date networkCarProofOn;
+    private LocalDateTime networkCarProofOn;
 
     /**
      * 资格证有效期截止日期
      */
-    private Date networkCarProofOff;
+    private LocalDateTime networkCarProofOff;
 
     /**
      * 报备日期
      */
-    private Date registerDate;
+    private LocalDateTime registerDate;
 
     /**
      * 服务类型：1：网络预约出租汽车；2：巡游出租汽车；3：私人小客车合乘
@@ -110,20 +111,20 @@ public class DriverUser {
     /**
      * 合同（协议）有效期起
      */
-    private Date contractOn;
+    private LocalDateTime contractOn;
 
     /**
      * 合同（协议）有效期止
      */
-    private Date contractOff;
+    private LocalDateTime contractOff;
 
     /**
      * 司机状态：0：有效；1：失效
      */
     private Integer state;
 
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
-    private Date gmtModified;
+    private LocalDateTime gmtModified;
 
 }

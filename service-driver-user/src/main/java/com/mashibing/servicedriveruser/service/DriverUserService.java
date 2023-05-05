@@ -20,8 +20,7 @@ public class DriverUserService {
 
     public ResponseResult test() {
         DriverUser driverUser = driverUserMapper.selectById(1);
-        log.info("从数据库中获取到的司机信息是：" + driverUser.getDriverName());
 
-        return ResponseResult.success();
+        return ResponseResult.success(driverUser);
     }
 }
