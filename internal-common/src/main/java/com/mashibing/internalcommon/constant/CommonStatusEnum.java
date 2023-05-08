@@ -42,6 +42,16 @@ public enum CommonStatusEnum {
     DRIVER_CAR_BIND_EXISTS(1500, "司机车辆绑定关系已存在，请勿重复绑定！"),
 
     /**
+     * 司机车辆绑定关系不存在
+     */
+    DRIVER_CAR_BIND_NOT_EXISTS(1501, "司机车辆绑定关系不存在"),
+
+    /**
+     * 司机车辆绑定或者解绑过程中出现逻辑错误，导致程序错误！
+     */
+    DRIVER_CAR_BIND_ERROR(1599, "司机车辆绑定或者解绑过程中出现逻辑错误，导致程序错误！"),
+
+    /**
      * 成功
      */
     SUCCESS(1, "success"),

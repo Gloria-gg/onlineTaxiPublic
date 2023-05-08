@@ -43,7 +43,7 @@ public class DriverCarBindingRelationshipController {
     @PostMapping("/unbinding")
     public ResponseResult unbindingDriverCar(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship) {
 
-        return ResponseResult.success();
+        return driverCarBindingRelationshipService.unbindingDriverCar(driverCarBindingRelationship);
     }
 
 }
