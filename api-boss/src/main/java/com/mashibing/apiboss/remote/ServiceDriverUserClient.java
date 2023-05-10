@@ -1,5 +1,6 @@
 package com.mashibing.apiboss.remote;
 
+import com.mashibing.internalcommon.dto.Car;
 import com.mashibing.internalcommon.dto.DriverUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,10 +16,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient("service-driver-user")
 public interface ServiceDriverUserClient {
 
+    /**
+     * 添加司机信息
+     *
+     * @param driverUser
+     * @return
+     */
     @RequestMapping(method = RequestMethod.POST, value = "/user")
     public ResponseResult addDriverUser(@RequestBody DriverUser driverUser);
 
+    /**
+     * 修改司机信息
+     *
+     * @param driverUser
+     * @return
+     */
     @RequestMapping(method = RequestMethod.PUT, value = "/user")
     public ResponseResult updateDriverUser(@RequestBody DriverUser driverUser);
+
+    /**
+     * 添加车辆信息
+     *
+     * @param car
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/car")
+    public ResponseResult addCar(@RequestBody Car car);
 
 }
