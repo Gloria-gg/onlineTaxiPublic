@@ -1,9 +1,11 @@
 package com.mashibing.apiboss.remote;
 
 import com.mashibing.internalcommon.dto.Car;
+import com.mashibing.internalcommon.dto.DriverCarBindingRelationship;
 import com.mashibing.internalcommon.dto.DriverUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,5 +44,23 @@ public interface ServiceDriverUserClient {
      */
     @RequestMapping(method = RequestMethod.POST, value = "/car")
     public ResponseResult addCar(@RequestBody Car car);
+
+    /**
+     * 司机车辆关系绑定
+     *
+     * @param driverCarBindingRelationship
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/driver-car-binding-relationship/binding")
+    public ResponseResult bindingDriverCar(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship);
+
+    /**
+     * 司机车辆关系绑定
+     *
+     * @param driverCarBindingRelationship
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/driver-car-binding-relationship/unbinding")
+    public ResponseResult unbindingDriverCar(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship);
 
 }

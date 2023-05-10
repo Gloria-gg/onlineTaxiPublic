@@ -1,20 +1,18 @@
-package com.mashibing.servicedriveruser.controller;
+package com.mashibing.apiboss.controller;
 
-
+import com.mashibing.apiboss.service.DriverCarBindingRelationshipService;
 import com.mashibing.internalcommon.dto.DriverCarBindingRelationship;
 import com.mashibing.internalcommon.dto.ResponseResult;
-import com.mashibing.servicedriveruser.service.DriverCarBindingRelationshipService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author Gloria
- * @since 2023-05-06
+ * @Author: Gloria
+ * @Description:
+ * @Date: Created in 11:59 AM 5/10/23
  */
 @RestController
 @RequestMapping("/driver-car-binding-relationship")
@@ -22,28 +20,15 @@ public class DriverCarBindingRelationshipController {
     @Autowired
     private DriverCarBindingRelationshipService driverCarBindingRelationshipService;
 
-    /**
-     * 司机与车辆关系绑定
-     *
-     * @param driverCarBindingRelationship
-     * @return
-     */
     @PostMapping("/binding")
     public ResponseResult bindingDriverCar(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship) {
 
         return driverCarBindingRelationshipService.bindingDriverCar(driverCarBindingRelationship);
     }
 
-    /**
-     * 司机与车辆关系解绑
-     *
-     * @param driverCarBindingRelationship
-     * @return
-     */
     @PostMapping("/unbinding")
     public ResponseResult unbindingDriverCar(@RequestBody DriverCarBindingRelationship driverCarBindingRelationship) {
 
         return driverCarBindingRelationshipService.unbindingDriverCar(driverCarBindingRelationship);
     }
-
 }
