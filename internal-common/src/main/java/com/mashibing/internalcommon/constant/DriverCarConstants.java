@@ -26,4 +26,14 @@ public class DriverCarConstants {
      * 司机状态 0：无效
      */
     public static int DRIVER_STATE_INVALID = 0;
+
+    /**
+     * 司机信息存在
+     */
+    public static int DRIVER_EXISTS = 1;
+
+    /**
+     * 司机信息不存在
+     */
+    public static int DRIVER_NOT_EXISTS = 0;
 }

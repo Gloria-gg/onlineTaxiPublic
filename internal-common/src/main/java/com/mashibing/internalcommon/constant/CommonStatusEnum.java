@@ -57,6 +57,11 @@ public enum CommonStatusEnum {
     DRIVER_INFO_ERROR(1503, "获取司机信息数据有误，请重新获取！"),
 
     /**
+     * 司机信息不存在！
+     */
+    DRIVER_NOT_EXISTS(1504, "司机信息不存在！"),
+
+    /**
      * 成功
      */
     SUCCESS(1, "success"),
