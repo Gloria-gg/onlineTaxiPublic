@@ -1,15 +1,11 @@
 package com.mashibing.apidriver.controller;
 
 import com.mashibing.apidriver.service.VerificationCodeService;
-import com.mashibing.internalcommon.dto.DriverUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.VerificationCodeDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: Gloria
@@ -30,7 +26,19 @@ public class VerificationCodeController {
      */
     @GetMapping("/verification-code")
     public ResponseResult getVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO) {
-        log.info("api-driver controller获取到的司机号码是：" + verificationCodeDTO.getDriverPhone());
         return verificationCodeService.checkAndSendVerificationCode(verificationCodeDTO.getDriverPhone());
+    }
+
+
+    /**
+     * 司机输入验证码进行用户验证码验证
+     *
+     * @param verificationCodeDTO
+     * @return
+     */
+    @PostMapping("/verification-code-check")
+    public ResponseResult checkVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO) {
+        return verificationCodeService.checkVerificationCode(verificationCodeDTO.getDriverPhone(),
+                verificationCodeDTO.getVerificationCode());
     }
 }
