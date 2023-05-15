@@ -72,10 +72,10 @@ public class MapConfigConstants {
     /**
      * 调用高德api，进行轨迹service创建
      */
-    public static final String SERVICE_ADD_URL ="https://tsapi.amap.com/v1/track/service/add?key=%s&name=%s";
+    public static final String SERVICE_ADD_URL = "https://tsapi.amap.com/v1/track/service/add?key=%s&name=%s";
 
     /**
-     *调用高德api，进行轨迹service查询
+     * 调用高德api，进行轨迹service下的terminal创建
      */
-    public static final String SERVICE_SEARCH_URL = "https://tsapi.amap.com/v1/track/service/list?key=%s";
+    public static final String TERMINAL_ADD_URL = "https://tsapi.amap.com/v1/track/terminal/add?key=%s&sid=%s&name=%s";
 }
