@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author: Gloria
- * @Description: 进行距离估计
+ * @Description: 根据起点终点经纬度获取距离和时长
  * @Date: Created in 10:54 AM 4/24/23
  */
 @RestController

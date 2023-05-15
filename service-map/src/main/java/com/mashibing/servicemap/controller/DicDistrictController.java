@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author: Gloria
- * @Description:
+ * @Description: 获取地区字典
  * @Date: Created in 9:09 AM 4/28/23
  */
 @RestController

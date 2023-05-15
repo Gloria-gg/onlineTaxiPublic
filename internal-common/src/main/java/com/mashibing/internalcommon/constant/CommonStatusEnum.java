@@ -62,6 +62,11 @@ public enum CommonStatusEnum {
     DRIVER_NOT_EXISTS(1504, "司机信息不存在！"),
 
     /**
+     * 添加轨迹service失败
+     */
+    MAP_SERVICE_ADD_ERROR(1600,"添加轨迹service失败！"),
+
+    /**
      * 成功
      */
     SUCCESS(1, "success"),
