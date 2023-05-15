@@ -32,7 +32,7 @@ public class TerminalClient {
      * @param name
      * @return
      */
-    public ResponseResult addTerminal(String name) {
+    public ResponseResult<TerminalResponse> addTerminal(String name) {
         String url = String.format(MapConfigConstants.TERMINAL_ADD_URL, amapKey, amapSid, name);
         ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(url, null, String.class);
         JSONObject result = JSONObject.fromObject(stringResponseEntity.getBody());

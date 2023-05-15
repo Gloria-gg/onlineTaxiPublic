@@ -1,6 +1,7 @@
 package com.mashibing.servicemap.service;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.response.TerminalResponse;
 import com.mashibing.servicemap.remote.TerminalClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class TerminalService {
     @Autowired
     private TerminalClient terminalClient;
 
-    public ResponseResult addTerminal(String name) {
+    public ResponseResult<TerminalResponse> addTerminal(String name) {
         return terminalClient.addTerminal(name);
     }
 }

@@ -27,7 +27,6 @@ public class CarController {
 
     @PostMapping("/car")
     public ResponseResult addCar(@RequestBody Car car) {
-
         return carService.addCar(car);
     }
 

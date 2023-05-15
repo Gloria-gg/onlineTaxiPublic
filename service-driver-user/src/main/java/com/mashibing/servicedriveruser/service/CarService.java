@@ -2,6 +2,8 @@ package com.mashibing.servicedriveruser.service;
 
 import com.mashibing.internalcommon.dto.Car;
 import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.response.TerminalResponse;
+import com.mashibing.servicedriveruser.client.ServiceMapClient;
 import com.mashibing.servicedriveruser.mapper.CarMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class CarService {
     @Autowired
     private CarMapper carMapper;
 
+    @Autowired
+    private ServiceMapClient serviceMapClient;
+
     /**
      * 添加car信息进入数据库
      *
@@ -28,6 +33,12 @@ public class CarService {
         LocalDateTime now = LocalDateTime.now();
         car.setGmtCreate(now);
         car.setGmtModified(now);
+
+        //获取车辆tid
+        ResponseResult<TerminalResponse> responseResponseResult = serviceMapClient.getPid(car.getVehicleNo());
+        String tid = responseResponseResult.getData().getTid();
+        car.setTid(tid);
+
         carMapper.insert(car);
 
         return ResponseResult.success("");
