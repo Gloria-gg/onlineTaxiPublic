@@ -83,4 +83,14 @@ public class MapConfigConstants {
      * 调用高德api，创建terminal下的车辆轨迹track
      */
     public static final String TRACK_ADD_URL = "https://tsapi.amap.com/v1/track/trace/add?key=%s&sid=%s&tid=%s";
+
+    /**
+     * 调用高德api，上传车辆轨迹下的轨迹点url
+     */
+    public static final String POINT_UPLOAD_URL = "https://tsapi.amap.com/v1/track/point/upload?key=%s&sid=%s&tid=%s&trid=%s&points=%s";
+
+    /**
+     * 上传轨迹点中需要将其中的points进行单独封装
+     */
+    public static final String POINTS_URL = "{\"location\":\"%s\",\"locatetime\":\"%s\"}";
 }
