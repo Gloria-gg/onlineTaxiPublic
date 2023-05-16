@@ -78,4 +78,9 @@ public class MapConfigConstants {
      * 调用高德api，进行轨迹service下的terminal创建
      */
     public static final String TERMINAL_ADD_URL = "https://tsapi.amap.com/v1/track/terminal/add?key=%s&sid=%s&name=%s";
+
+    /**
+     * 调用高德api，创建terminal下的车辆轨迹track
+     */
+    public static final String TRACK_ADD_URL = "https://tsapi.amap.com/v1/track/trace/add?key=%s&sid=%s&tid=%s";
 }
