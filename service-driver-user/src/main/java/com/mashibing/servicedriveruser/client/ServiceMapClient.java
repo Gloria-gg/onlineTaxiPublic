@@ -2,6 +2,7 @@ package com.mashibing.servicedriveruser.client;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.TerminalResponse;
+import com.mashibing.internalcommon.response.TrackResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,5 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ServiceMapClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/terminal/add")
-    public ResponseResult<TerminalResponse> getPid(@RequestParam String name);
+    public ResponseResult<TerminalResponse> getTid(@RequestParam String name);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/track/add")
+    public ResponseResult<TrackResponse> getTrid(@RequestParam String tid);
 }
