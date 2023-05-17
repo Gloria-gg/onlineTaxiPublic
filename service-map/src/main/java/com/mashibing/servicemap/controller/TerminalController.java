@@ -20,7 +20,7 @@ public class TerminalController {
     private TerminalService terminalService;
 
     @PostMapping("/add")
-    public ResponseResult<TerminalResponse> addTerminal(String name) {
-        return terminalService.addTerminal(name);
+    public ResponseResult<TerminalResponse> addTerminal(String name,String desc) {
+        return terminalService.addTerminal(name,desc);
     }
 }
