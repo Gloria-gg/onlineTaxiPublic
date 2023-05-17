@@ -33,6 +33,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/noauthTest")
                 .excludePathPatterns("/verification-code")
                 .excludePathPatterns("/verification-code-check")
+                .excludePathPatterns("/point/upload")
                 .excludePathPatterns("/token-refresh");
     }
 }

@@ -64,8 +64,12 @@ public enum CommonStatusEnum {
     /**
      * 添加轨迹service失败
      */
-    MAP_SERVICE_ADD_ERROR(1600,"添加轨迹service失败！"),
+    MAP_SERVICE_ADD_ERROR(1600, "添加轨迹service失败！"),
 
+    /**
+     * 无车辆信息存在
+     */
+    CAR_INFO_ERROR(1700, "无车辆信息存在！"),
     /**
      * 成功
      */

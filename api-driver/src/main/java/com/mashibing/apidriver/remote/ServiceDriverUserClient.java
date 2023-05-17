@@ -1,13 +1,13 @@
 package com.mashibing.apidriver.remote;
 
+import com.mashibing.internalcommon.dto.Car;
 import com.mashibing.internalcommon.dto.DriverUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.DriverUserExistsResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
 
 /**
  * @Author: Gloria
@@ -34,4 +34,13 @@ public interface ServiceDriverUserClient {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/check-driver/{driverPhone}")
     public ResponseResult<DriverUserExistsResponse> checkDriverUser(@PathVariable("driverPhone") String driverPhone);
+
+    /**
+     * 通过车辆ID获取车辆信息
+     *
+     * @param carId
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/getCarById")
+    public ResponseResult<Car> getCarById(@RequestParam Long carId);
 }

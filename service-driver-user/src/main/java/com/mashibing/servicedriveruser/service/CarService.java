@@ -1,5 +1,6 @@
 package com.mashibing.servicedriveruser.service;
 
+import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.Car;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.TerminalResponse;
@@ -10,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Gloria
@@ -50,5 +54,22 @@ public class CarService {
         carMapper.insert(car);
 
         return ResponseResult.success("");
+    }
+
+    /**
+     * 通过车辆carId获取车辆信息
+     *
+     * @param carId
+     * @return
+     */
+    public ResponseResult<Car> getCarById(Long carId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", carId);
+        List<Car> cars = carMapper.selectByMap(map);
+        if (cars.size() != 1) {
+            return ResponseResult.fail(CommonStatusEnum.CAR_INFO_ERROR.getCode(),
+                    CommonStatusEnum.CAR_INFO_ERROR.getMessage());
+        }
+        return ResponseResult.success(cars.get(0));
     }
 }
