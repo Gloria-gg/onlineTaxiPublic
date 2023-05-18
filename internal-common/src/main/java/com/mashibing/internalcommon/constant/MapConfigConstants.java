@@ -93,4 +93,9 @@ public class MapConfigConstants {
      * 上传轨迹点中需要将其中的points进行单独封装
      */
     public static final String POINTS_URL = "{\"location\":\"%s\",\"locatetime\":\"%s\"}";
+
+    /**
+     * 根据中心点和半径进行周围车辆搜索url
+     */
+    public static final String AROUND_SEARCH_URL = "https://tsapi.amap.com/v1/track/terminal/aroundsearch?key=%s&sid=%s&center=%s&radius=%s";
 }

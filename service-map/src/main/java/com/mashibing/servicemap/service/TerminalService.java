@@ -6,6 +6,8 @@ import com.mashibing.servicemap.remote.TerminalClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Author: Gloria
  * @Description:
@@ -16,7 +18,11 @@ public class TerminalService {
     @Autowired
     private TerminalClient terminalClient;
 
-    public ResponseResult<TerminalResponse> addTerminal(String name,String desc) {
-        return terminalClient.addTerminal(name,desc);
+    public ResponseResult<TerminalResponse> addTerminal(String name, String desc) {
+        return terminalClient.addTerminal(name, desc);
+    }
+
+    public ResponseResult<List<TerminalResponse>> aroundSearch(String center, Integer radius) {
+        return terminalClient.aroundSearch(center, radius);
     }
 }

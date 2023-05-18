@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @Author: Gloria
  * @Description: 根据轨迹service进行终端terminal等操作
@@ -20,7 +22,12 @@ public class TerminalController {
     private TerminalService terminalService;
 
     @PostMapping("/add")
-    public ResponseResult<TerminalResponse> addTerminal(String name,String desc) {
-        return terminalService.addTerminal(name,desc);
+    public ResponseResult<TerminalResponse> addTerminal(String name, String desc) {
+        return terminalService.addTerminal(name, desc);
+    }
+
+    @PostMapping("/aroundsearch")
+    public ResponseResult<List<TerminalResponse>> aroundSearch(String center, Integer radius) {
+        return terminalService.aroundSearch(center, radius);
     }
 }
