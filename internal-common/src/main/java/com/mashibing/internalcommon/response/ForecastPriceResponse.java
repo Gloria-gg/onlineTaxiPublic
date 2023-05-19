@@ -11,4 +11,8 @@ import lombok.Data;
 public class ForecastPriceResponse {
 
     private Double price;
+
+    private String vehicleType;
+
+    private String cityCode;
 }

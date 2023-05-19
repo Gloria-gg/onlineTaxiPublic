@@ -1,5 +1,6 @@
 package com.mashibing.serviceprice.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
@@ -33,7 +34,8 @@ public class ForecastPriceService {
     private PriceRuleMapper priceRuleMapper;
 
     public ResponseResult forecastPrice(String depLongitude, String depLatitude,
-                                        String destLongitude, String destLatitude) {
+                                        String destLongitude, String destLatitude,
+                                        String cityCode, String vehicleType) {
 
         ForecastPriceDTO forecastPriceDTO = new ForecastPriceDTO();
         forecastPriceDTO.setDepLongitude(depLongitude);
@@ -47,10 +49,13 @@ public class ForecastPriceService {
         log.info("service-price中读取到的距离和时长分别是：" + distance + "   " + duration);
 
 
-        Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("city_code", "110000");
-        queryMap.put("vehicle_type", "1");
-        List<PriceRule> priceRules = priceRuleMapper.selectByMap(queryMap);
+        //获取计价规则，获取要是最新的
+        QueryWrapper<PriceRule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("city_code", cityCode);
+        queryWrapper.eq("vehicle_type", vehicleType);
+        queryWrapper.orderByDesc("fare_version");
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
+
 
         //不能没有计价规则
         if (priceRules.size() == 0) {
@@ -60,6 +65,8 @@ public class ForecastPriceService {
 
         ForecastPriceResponse forecastPriceResponse = new ForecastPriceResponse();
         forecastPriceResponse.setPrice(getPrice(distance, duration, priceRules.get(0)));
+        forecastPriceResponse.setCityCode(cityCode);
+        forecastPriceResponse.setVehicleType(vehicleType);
 
         return ResponseResult.success(forecastPriceResponse);
     }
