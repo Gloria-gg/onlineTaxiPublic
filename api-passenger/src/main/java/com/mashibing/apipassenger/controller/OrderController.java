@@ -1,6 +1,6 @@
 package com.mashibing.apipassenger.controller;
 
-import com.mashibing.apipassenger.service.ServiceOrderService;
+import com.mashibing.apipassenger.service.OrderService;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class OrderController {
     @Autowired
-    private ServiceOrderService serviceOrderService;
+    private OrderService orderService;
 
     @PostMapping("/add")
     public ResponseResult addOrder(@RequestBody OrderRequest orderRequest) {
-        return serviceOrderService.addOrder(orderRequest);
+        return orderService.addOrder(orderRequest);
     }
 }

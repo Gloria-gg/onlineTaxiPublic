@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * @Date: Created in 4:36 PM 5/18/23
  */
 @Service
-public class ServiceOrderService {
+public class OrderService {
 
     @Autowired
     private ServiceOrderClient serviceOrderClient;

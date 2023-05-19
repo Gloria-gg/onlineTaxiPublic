@@ -2,7 +2,9 @@ package com.mashibing.serviceorder.controller;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
+import com.mashibing.serviceorder.service.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/order")
 @Slf4j
 public class OrderController {
+    @Autowired
+    private OrderInfoService orderInfoService;
 
     @PostMapping("/add")
     public ResponseResult addOrder(@RequestBody OrderRequest orderRequest) {
         log.info("从service-order获取到的数据是：" + orderRequest.toString());
+        orderInfoService.addOrder(orderRequest);
         return ResponseResult.success("");
     }
 }
