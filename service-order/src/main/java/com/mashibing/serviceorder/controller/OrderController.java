@@ -25,7 +25,6 @@ public class OrderController {
     @PostMapping("/add")
     public ResponseResult addOrder(@RequestBody OrderRequest orderRequest) {
         log.info("从service-order获取到的数据是：" + orderRequest.toString());
-        orderInfoService.addOrder(orderRequest);
-        return ResponseResult.success("");
+        return orderInfoService.addOrder(orderRequest);
     }
 }
