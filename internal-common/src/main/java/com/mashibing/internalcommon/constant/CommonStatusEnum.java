@@ -27,9 +27,19 @@ public enum CommonStatusEnum {
     USER_NOT_EXISTS(1299, "用户信息不存在"),
 
     /**
+     * 计价规则已存在
+     */
+    PRICE_RULE_EXISTS(1300, "计价规则已存在！"),
+
+    /**
      * 计价规则不存在：1300-1399
      */
-    PRICE_RULE_EMPTY(1399, "计价规则不存在"),
+    PRICE_RULE_EMPTY(1301, "计价规则不存在！"),
+
+    /**
+     * 计价规则没有变化
+     */
+    PRICE_RULE_NOT_CHANGE(1302, "计价规则没有变化"),
 
     /**
      * 请求地图错误：1400-1499
