@@ -2,16 +2,20 @@ package com.mashibing.internalcommon.dto;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
 /**
- * @Author: Gloria
- * @Description:
- * @Date: Created in 9:09 AM 4/27/23
+ * <p>
+ * 
+ * </p>
+ *
+ * @author Gloria
+ * @since 2023-05-19
  */
 @Data
-public class PriceRule {
+public class PriceRule implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 城市代码
@@ -26,20 +30,15 @@ public class PriceRule {
     /**
      * 起步价
      */
-    private BigDecimal startFare;
+    private Double startFare;
 
-    /**
-     * 起步里程
-     */
     private Integer startMile;
 
-    /**
-     * 后续每公里价格
-     */
-    private BigDecimal unitPricePerMile;
+    private Double unitPricePerMile;
 
-    /**
-     * 后续每分钟价格
-     */
-    private BigDecimal unitPricePerMinute;
+    private Double unitPricePerMinute;
+
+    private Integer fareVersion;
+
+    private String fareType;
 }

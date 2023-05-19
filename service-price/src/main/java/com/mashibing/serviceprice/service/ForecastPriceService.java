@@ -76,7 +76,7 @@ public class ForecastPriceService {
         BigDecimal finalPrice = new BigDecimal(0);
 
         //起步价
-        finalPrice = finalPrice.add(priceRule.getStartFare());
+        finalPrice = finalPrice.add(BigDecimal.valueOf(priceRule.getStartFare()));
 //        log.info("第一步：起步价的价格是：" + priceRule.getStartFare());
 //        log.info("第一步：加了起步价的价格是：" + finalPrice);
 
@@ -89,7 +89,7 @@ public class ForecastPriceService {
         BigDecimal subtract = kmDistance.subtract(new BigDecimal(priceRule.getStartMile()));
         if (subtract.compareTo(new BigDecimal(0)) > 0) {
             //只有超过起步里程，才能对多余的里程进行计价
-            finalPrice = finalPrice.add(subtract.multiply(priceRule.getUnitPricePerMile()).setScale(2, BigDecimal.ROUND_HALF_UP));
+            finalPrice = finalPrice.add(subtract.multiply(BigDecimal.valueOf(priceRule.getUnitPricePerMile())).setScale(2, BigDecimal.ROUND_HALF_UP));
         }
 //        log.info("第三步：起步里程是：" + priceRule.getStartMile() + " 千米");
 //        log.info("第三步：加上多余的路程后总共价格：" + finalPrice + " 元");
@@ -99,7 +99,7 @@ public class ForecastPriceService {
         //总时间换算成分钟
         BigDecimal minTime = new BigDecimal(duration).divide(new BigDecimal(60), 2, BigDecimal.ROUND_HALF_UP);
         //根据每分钟价格进行时间价格计算
-        finalPrice = finalPrice.add(minTime.multiply(priceRule.getUnitPricePerMinute()).setScale(2, BigDecimal.ROUND_HALF_UP));
+        finalPrice = finalPrice.add(minTime.multiply(BigDecimal.valueOf(priceRule.getUnitPricePerMinute())).setScale(2, BigDecimal.ROUND_HALF_UP));
 
 //        log.info("第四步：总共行驶分钟数：" + duration + " 秒");
 //        log.info("第四步：换算成分钟为：" + minTime + " 分钟");
