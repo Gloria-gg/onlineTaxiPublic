@@ -90,6 +90,11 @@ public enum CommonStatusEnum {
      * 有正在进行的订单
      */
     ORDER_GOING_ON(1800, "有正在进行的订单！"),
+
+    /**
+     * 下单异常
+     */
+    DEVICE_IS_BLACK(1801,"该设备超过下单次数！"),
     /**
      * 成功
      */

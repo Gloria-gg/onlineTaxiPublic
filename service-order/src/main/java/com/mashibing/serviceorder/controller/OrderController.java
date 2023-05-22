@@ -1,5 +1,6 @@
 package com.mashibing.serviceorder.controller;
 
+import com.mashibing.internalcommon.constant.HeaderParamConstants;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.serviceorder.service.OrderInfoService;
@@ -9,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sun.jvm.hotspot.memory.HeapBlock;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: Gloria
@@ -24,7 +28,6 @@ public class OrderController {
 
     @PostMapping("/add")
     public ResponseResult addOrder(@RequestBody OrderRequest orderRequest) {
-        log.info("从service-order获取到的数据是：" + orderRequest.toString());
         return orderInfoService.addOrder(orderRequest);
     }
 }
