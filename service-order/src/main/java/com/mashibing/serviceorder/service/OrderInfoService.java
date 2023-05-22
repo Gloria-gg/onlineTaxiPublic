@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.OrderConstants;
 import com.mashibing.internalcommon.dto.OrderInfo;
+import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
@@ -59,16 +60,22 @@ public class OrderInfoService {
                     CommonStatusEnum.PRICE_RULE_CHANGED.getMessage());
         }
 
+        //判断当前城市是否有计价规则
+        if (!ifPriceRuleExists(orderRequest)) {
+            return ResponseResult.fail(CommonStatusEnum.CITY_NOT_PROVIDE_SERVICE.getCode(),
+                    CommonStatusEnum.CITY_NOT_PROVIDE_SERVICE.getMessage());
+        }
+
         //若系统中已经存在还未完成的订单，那么就不能进行新订单的生成
-        if (isOrderGoingOn(orderRequest.getPassengerId()) > 0) {
-            return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),
-                    CommonStatusEnum.ORDER_GOING_ON.getMessage());
-        }
-        //需要判断下单的用户是否是黑名单用户,是，则进行错误值返回
-        if (isBlackDevice(orderRequest.getDeviceCode())) {
-            return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(),
-                    CommonStatusEnum.DEVICE_IS_BLACK.getMessage());
-        }
+//        if (isOrderGoingOn(orderRequest.getPassengerId()) > 0) {
+//            return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),
+//                    CommonStatusEnum.ORDER_GOING_ON.getMessage());
+//        }
+//        //需要判断下单的用户是否是黑名单用户,是，则进行错误值返回
+//        if (isBlackDevice(orderRequest.getDeviceCode())) {
+//            return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(),
+//                    CommonStatusEnum.DEVICE_IS_BLACK.getMessage());
+//        }
 
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderRequest, orderInfo);
@@ -128,6 +135,16 @@ public class OrderInfoService {
             stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 1L, TimeUnit.HOURS);
         }
         return false;
+    }
+
+    public Boolean ifPriceRuleExists(OrderRequest orderRequest) {
+        String cityCode = orderRequest.getAddress();
+        String vehicleType = orderRequest.getVehicleType();
+        PriceRule priceRule = new PriceRule();
+        priceRule.setCityCode(cityCode);
+        priceRule.setVehicleType(vehicleType);
+
+        return servicePriceClient.ifExists(priceRule).getData();
     }
 
 }

@@ -94,7 +94,12 @@ public enum CommonStatusEnum {
     /**
      * 下单异常
      */
-    DEVICE_IS_BLACK(1801,"该设备超过下单次数！"),
+    DEVICE_IS_BLACK(1801, "该设备超过下单次数！"),
+
+    /**
+     * 当前城市不提供打车服务
+     */
+    CITY_NOT_PROVIDE_SERVICE(1802, "当前城市不提供打车服务！"),
     /**
      * 成功
      */
