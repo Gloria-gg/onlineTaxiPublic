@@ -11,6 +11,7 @@ import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
 import com.mashibing.serviceorder.remote.ServicePriceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.omg.CORBA.COMM_FAILURE;
@@ -44,6 +45,9 @@ public class OrderInfoService {
     private ServicePriceClient servicePriceClient;
 
     @Autowired
+    private ServiceDriverUserClient serviceDriverUserClient;
+
+    @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
     /**
@@ -53,6 +57,13 @@ public class OrderInfoService {
      * @return
      */
     public ResponseResult addOrder(OrderRequest orderRequest) {
+        //判断当前城市是否有司机提供
+        ResponseResult<Boolean> driverAvailable = serviceDriverUserClient.isDriverAvailable(orderRequest.getAddress());
+        if (!driverAvailable.getData()) {
+            return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(),
+                    CommonStatusEnum.CITY_DRIVER_EMPTY.getMessage());
+        }
+
         //判断计价规则是否是当前最新计价规则
         if (!(servicePriceClient.isLatestFareVersion(orderRequest.getFareType(),
                 orderRequest.getFareVersion()).getData())) {
@@ -67,15 +78,15 @@ public class OrderInfoService {
         }
 
         //若系统中已经存在还未完成的订单，那么就不能进行新订单的生成
-//        if (isOrderGoingOn(orderRequest.getPassengerId()) > 0) {
-//            return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),
-//                    CommonStatusEnum.ORDER_GOING_ON.getMessage());
-//        }
-//        //需要判断下单的用户是否是黑名单用户,是，则进行错误值返回
-//        if (isBlackDevice(orderRequest.getDeviceCode())) {
-//            return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(),
-//                    CommonStatusEnum.DEVICE_IS_BLACK.getMessage());
-//        }
+        if (isOrderGoingOn(orderRequest.getPassengerId()) > 0) {
+            return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),
+                    CommonStatusEnum.ORDER_GOING_ON.getMessage());
+        }
+        //需要判断下单的用户是否是黑名单用户,是，则进行错误值返回
+        if (isBlackDevice(orderRequest.getDeviceCode())) {
+            return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(),
+                    CommonStatusEnum.DEVICE_IS_BLACK.getMessage());
+        }
 
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderRequest, orderInfo);

@@ -100,6 +100,12 @@ public enum CommonStatusEnum {
      * 当前城市不提供打车服务
      */
     CITY_NOT_PROVIDE_SERVICE(1802, "当前城市不提供打车服务！"),
+
+    /**
+     * 当前城市没有司机提供
+     */
+    CITY_DRIVER_EMPTY(1803, "当前城市没有司机提供！"),
+
     /**
      * 成功
      */

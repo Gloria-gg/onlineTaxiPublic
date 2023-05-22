@@ -28,6 +28,6 @@ public class CityDriverUserService {
             return ResponseResult.success(true);
         }
 
-        return ResponseResult.fail(false);
+        return ResponseResult.success(false);
     }
 }
