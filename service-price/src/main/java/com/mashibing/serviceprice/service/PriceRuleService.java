@@ -133,4 +133,27 @@ public class PriceRuleService {
             return ResponseResult.success(false);
         }
     }
+
+    /**
+     * 根据城市编码和车型判断计价规则是否存在
+     *
+     * @param priceRule
+     * @return
+     */
+    public ResponseResult<Boolean> ifExists(PriceRule priceRule) {
+        String cityCode = priceRule.getCityCode();
+        String vehicleType = priceRule.getVehicleType();
+
+        QueryWrapper<PriceRule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("city_code", cityCode);
+        queryWrapper.eq("vehicle_type", vehicleType);
+        queryWrapper.orderByDesc("fare_version");
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
+
+        if (priceRules.size() > 0) {
+            return ResponseResult.success(true);
+        }
+
+        return ResponseResult.fail(false);
+    }
 }
