@@ -1,5 +1,6 @@
 package com.mashibing.serviceorder.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.OrderConstants;
@@ -10,6 +11,7 @@ import com.mashibing.serviceorder.mapper.OrderInfoMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mashibing.serviceorder.remote.ServicePriceClient;
 import lombok.extern.slf4j.Slf4j;
+import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.ORB;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,13 @@ public class OrderInfoService {
                     CommonStatusEnum.PRICE_RULE_CHANGED.getMessage());
         }
 
+
+        //若系统中已经存在还未完成的订单，那么就不能进行新订单的生成
+        if (isOrderGoingOn(orderRequest.getPassengerId()) > 0) {
+            return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),
+                    CommonStatusEnum.ORDER_GOING_ON.getMessage());
+        }
+
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(orderRequest, orderInfo);
         orderInfo.setOrderStatus(OrderConstants.ORDER_START);
@@ -66,5 +75,29 @@ public class OrderInfoService {
         return ResponseResult.success("");
     }
 
+    /**
+     * 判断是否有正在进行中的订单
+     *
+     * @param passengerId
+     * @return
+     */
+    public int isOrderGoingOn(Long passengerId) {
+        //乘客还有未完成的订单则不允许下单
+        QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("passenger_id", passengerId);
+        queryWrapper.and(
+                wrapper -> wrapper.eq("order_status", OrderConstants.ORDER_START)
+                        .or().eq("order_status", OrderConstants.DRIVER_RECEIVE_ORDER)
+                        .or().eq("order_status", OrderConstants.DRIVER_TO_PICK_UP_PASSENGER)
+                        .or().eq("order_status", OrderConstants.DRIVER_ARRIVED_DEPARTURE)
+                        .or().eq("order_status", OrderConstants.PICK_UP_PASSENGER)
+                        .or().eq("order_status", OrderConstants.PASSENGER_GET_OFF)
+                        .or().eq("order_status", OrderConstants.TO_START_PAY)
+        );
+
+        Integer validOrderNum = orderInfoMapper.selectCount(queryWrapper);
+
+        return validOrderNum;
+    }
 
 }

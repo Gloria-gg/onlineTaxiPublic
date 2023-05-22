@@ -85,6 +85,11 @@ public enum CommonStatusEnum {
      * 无车辆信息存在
      */
     CAR_INFO_ERROR(1700, "无车辆信息存在！"),
+
+    /**
+     * 有正在进行的订单
+     */
+    ORDER_GOING_ON(1800, "有正在进行的订单！"),
     /**
      * 成功
      */

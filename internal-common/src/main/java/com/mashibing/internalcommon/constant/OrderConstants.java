@@ -6,6 +6,10 @@ package com.mashibing.internalcommon.constant;
  * @Date: Created in 9:16 AM 5/19/23
  */
 public class OrderConstants {
+    /**
+     * 0.订单无效
+     */
+    public static final int ORDER_INVALID = 0;
 
     /**
      * 1.订单开始
