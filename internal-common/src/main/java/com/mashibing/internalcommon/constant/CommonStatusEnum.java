@@ -42,6 +42,11 @@ public enum CommonStatusEnum {
     PRICE_RULE_NOT_CHANGE(1302, "计价规则没有变化"),
 
     /**
+     * 计价规则有变化
+     */
+    PRICE_RULE_CHANGED(1303, "计价规则有变化"),
+
+    /**
      * 请求地图错误：1400-1499
      */
     MAP_DIC_DISTRICT_ERROR(1400, "请求地图错误"),
