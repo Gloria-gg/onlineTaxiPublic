@@ -33,6 +33,7 @@ public class ResponseResult<T> {
 
     /**
      * 默认返回成功信息
+     *
      * @param <T>
      * @return
      */
@@ -62,7 +63,10 @@ public class ResponseResult<T> {
      * @return
      */
     public static <T> ResponseResult fail(T data) {
-        return new ResponseResult().setData(data);
+        return new ResponseResult()
+                .setCode(CommonStatusEnum.FAIL.getCode())
+                .setMessage(CommonStatusEnum.FAIL.getMessage())
+                .setData(data);
     }
 
     /**

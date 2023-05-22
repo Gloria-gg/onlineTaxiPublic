@@ -16,10 +16,4 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @Autowired
     private DriverUserService driverUserService;
-
-    @GetMapping("/test")
-    public String test(String cityCode) {
-
-        return driverUserService.select1(cityCode)+"";
-    }
 }

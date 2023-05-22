@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author Gloria
@@ -16,5 +16,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DriverUserWorkStatusMapper extends BaseMapper<DriverUserWorkStatus> {
 
-    public int select1(@Param("cityCode") String cityCode);
+    /**
+     * 通过城市代码搜索有多少司机个数
+     *
+     * @param cityCode
+     * @return
+     */
+    public int selectDriverCountByCityCode(@Param("cityCode") String cityCode);
 }
