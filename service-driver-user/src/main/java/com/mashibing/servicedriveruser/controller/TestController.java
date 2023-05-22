@@ -4,6 +4,7 @@ import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.servicedriveruser.service.DriverUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -17,8 +18,8 @@ public class TestController {
     private DriverUserService driverUserService;
 
     @GetMapping("/test")
-    public String test() {
+    public String test(String cityCode) {
 
-        return "controller from service driver user!";
+        return driverUserService.select1(cityCode)+"";
     }
 }

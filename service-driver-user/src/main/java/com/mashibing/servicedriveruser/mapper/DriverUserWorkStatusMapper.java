@@ -2,6 +2,7 @@ package com.mashibing.servicedriveruser.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mashibing.internalcommon.dto.DriverUserWorkStatus;
+import feign.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,4 +16,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DriverUserWorkStatusMapper extends BaseMapper<DriverUserWorkStatus> {
 
+    public int select1(@Param("cityCode") String cityCode);
 }

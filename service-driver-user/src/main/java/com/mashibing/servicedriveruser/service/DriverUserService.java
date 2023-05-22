@@ -89,4 +89,8 @@ public class DriverUserService {
         DriverUser driverUser = driverUserList.get(0);
         return ResponseResult.success(driverUser);
     }
+
+    public int select1(String cityCode) {
+        return driverUserWorkStatusMapper.select1(cityCode);
+    }
 }
