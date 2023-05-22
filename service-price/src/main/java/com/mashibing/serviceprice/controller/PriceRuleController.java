@@ -4,13 +4,11 @@ package com.mashibing.serviceprice.controller;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.serviceprice.service.PriceRuleService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -34,6 +32,22 @@ public class PriceRuleController {
     @PostMapping("/edit")
     public ResponseResult editPriceRule(@RequestBody PriceRule priceRule) {
         return priceRuleService.editPriceRule(priceRule);
+    }
+
+    @GetMapping("/get-latest-version")
+    public ResponseResult<PriceRule> getLatestFareVersion(@RequestParam String fareType) {
+        return priceRuleService.getLatestFareVersion(fareType);
+    }
+
+    /**
+     * 判断计价规则是否是最新计价规则
+     *
+     * @param fareType
+     * @return
+     */
+    @GetMapping("/is-latest-version")
+    public ResponseResult<Boolean> isLatestFareVersion(@RequestParam String fareType, @RequestParam Integer fareVersion) {
+        return priceRuleService.isLatestFareVersion(fareType, fareVersion);
     }
 
 }

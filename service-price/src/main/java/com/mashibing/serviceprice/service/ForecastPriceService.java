@@ -63,10 +63,13 @@ public class ForecastPriceService {
                     CommonStatusEnum.PRICE_RULE_EMPTY.getMessage());
         }
 
+        PriceRule priceRule = priceRules.get(0);
         ForecastPriceResponse forecastPriceResponse = new ForecastPriceResponse();
-        forecastPriceResponse.setPrice(getPrice(distance, duration, priceRules.get(0)));
+        forecastPriceResponse.setPrice(getPrice(distance, duration, priceRule));
         forecastPriceResponse.setCityCode(cityCode);
         forecastPriceResponse.setVehicleType(vehicleType);
+        forecastPriceResponse.setFareType(priceRule.getFareType());
+        forecastPriceResponse.setFareVersion(priceRule.getFareVersion());
 
         return ResponseResult.success(forecastPriceResponse);
     }

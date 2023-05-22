@@ -94,4 +94,43 @@ public class PriceRuleService {
 
     }
 
+    /**
+     * 通过fareType获得最新fareVersion值
+     *
+     * @param fareType
+     * @return
+     */
+    public ResponseResult<PriceRule> getLatestFareVersion(String fareType) {
+        QueryWrapper<PriceRule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("fare_type", fareType);
+        queryWrapper.orderByDesc("fare_version");
+
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
+        if (priceRules.size() < 1 || priceRules.isEmpty()) {
+            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_EMPTY.getCode(),
+                    CommonStatusEnum.PRICE_RULE_EMPTY.getMessage());
+        }
+
+        return ResponseResult.success(priceRules.get(0));
+    }
+
+    /**
+     * 判断当前计价规则是否是最新计价规则
+     *
+     * @param fareType
+     * @param fareVersion
+     * @return
+     */
+    public ResponseResult<Boolean> isLatestFareVersion(String fareType, Integer fareVersion) {
+        QueryWrapper<PriceRule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("fare_type", fareType);
+        queryWrapper.orderByDesc("fare_version");
+
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
+        if (priceRules.size() > 0 && priceRules.get(0).getFareVersion().equals(fareVersion)) {
+            return ResponseResult.success(true);
+        } else {
+            return ResponseResult.success(false);
+        }
+    }
 }

@@ -15,4 +15,8 @@ public class ForecastPriceResponse {
     private String vehicleType;
 
     private String cityCode;
+
+    private String fareType;
+
+    private Integer fareVersion;
 }
