@@ -1,7 +1,6 @@
 package com.mashibing.serviceorder.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.OrderConstants;
 import com.mashibing.internalcommon.dto.OrderInfo;
@@ -13,13 +12,10 @@ import com.mashibing.internalcommon.response.OrderDriverResponse;
 import com.mashibing.internalcommon.response.TerminalResponse;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
 import com.mashibing.serviceorder.remote.ServiceMapClient;
 import com.mashibing.serviceorder.remote.ServicePriceClient;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CORBA.COMM_FAILURE;
-import org.omg.CORBA.ORB;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -27,9 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -88,7 +82,7 @@ public class OrderInfoService {
         }
 
         //若系统中已经存在还未完成的订单，那么就不能进行新订单的生成
-        if (isOrderGoingOn(orderRequest.getPassengerId()) > 0) {
+        if (isPassengerOrderGoingOn(orderRequest.getPassengerId()) > 0) {
             return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),
                     CommonStatusEnum.ORDER_GOING_ON.getMessage());
         }
@@ -136,9 +130,19 @@ public class OrderInfoService {
                     Long carId = terminalResponse.getCarId();
                     String tid = terminalResponse.getTid();
                     //远程调用service-driver-user查询否有司机可以派送订单
-                    OrderDriverResponse data = serviceDriverUserClient.getDriverByCarId(carId).getData();
-                    if (null == data) {
+                    ResponseResult<OrderDriverResponse> driverByCarId = serviceDriverUserClient.getDriverByCarId(carId);
+                    if (driverByCarId.getCode() == CommonStatusEnum.DRIVER_CAR_BIND_NOT_EXISTS.getCode()
+                            || driverByCarId.getCode() == CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getCode()) {
+                        continue;
+                    }
+                    log.info("找到了可以出车的司机ID：" + driverByCarId.getData().getDriverId());
 
+                    OrderDriverResponse data = driverByCarId.getData();
+                    Long driverId = data.getDriverId();
+                    //若司机存在正在进行的订单，那么就不能进行订单派送
+                    if (isDriverOrderGoingOn(driverId) > 0) {
+                        log.info("可以出车的司机：" + data.getDriverId() + " 正在接送乘客中，所以无法进行新订单的派送！");
+                        continue;
                     }
 
 
@@ -154,12 +158,12 @@ public class OrderInfoService {
     }
 
     /**
-     * 判断是否有正在进行中的订单
+     * 判断乘客是否有正在进行中的订单
      *
      * @param passengerId
      * @return
      */
-    public int isOrderGoingOn(Long passengerId) {
+    public int isPassengerOrderGoingOn(Long passengerId) {
         //乘客还有未完成的订单则不允许下单
         QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("passenger_id", passengerId);
@@ -177,6 +181,29 @@ public class OrderInfoService {
 
         return validOrderNum;
     }
+
+    /**
+     * 判断司机是否有正在进行的订单
+     *
+     * @param driverId
+     * @return
+     */
+    public int isDriverOrderGoingOn(Long driverId) {
+        //乘客还有未完成的订单则不允许下单
+        QueryWrapper<OrderInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("driver_id", driverId);
+        queryWrapper.and(
+                wrapper -> wrapper.eq("order_status", OrderConstants.DRIVER_RECEIVE_ORDER)
+                        .or().eq("order_status", OrderConstants.DRIVER_TO_PICK_UP_PASSENGER)
+                        .or().eq("order_status", OrderConstants.DRIVER_ARRIVED_DEPARTURE)
+                        .or().eq("order_status", OrderConstants.PICK_UP_PASSENGER)
+        );
+
+        Integer validOrderNum = orderInfoMapper.selectCount(queryWrapper);
+
+        return validOrderNum;
+    }
+
 
     /**
      * 判断是否是黑名单用户，若不是，那么进行赋值，否则直接返回true
