@@ -4,6 +4,7 @@ import com.mashibing.internalcommon.constant.DriverCarConstants;
 import com.mashibing.internalcommon.dto.DriverUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.DriverUserExistsResponse;
+import com.mashibing.internalcommon.response.OrderDriverResponse;
 import com.mashibing.servicedriveruser.service.DriverUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,16 @@ public class DriverUserController {
         driverUserExistsResponse.setIsExists(isExists);
 
         return ResponseResult.success(driverUserExistsResponse);
+    }
+
+    /**
+     * 根据车辆ID获取可以出车的司机信息
+     *
+     * @param carId
+     * @return
+     */
+    @GetMapping("/get-available-driver/{carId}")
+    public ResponseResult<OrderDriverResponse> getDriverByCarId(@PathVariable("carId") Long carId) {
+        return driverUserService.getDriverByCarId(carId);
     }
 }

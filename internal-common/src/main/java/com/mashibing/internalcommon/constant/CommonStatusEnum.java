@@ -107,6 +107,11 @@ public enum CommonStatusEnum {
     CITY_DRIVER_EMPTY(1803, "当前城市没有司机提供！"),
 
     /**
+     * 可出车司机为空
+     */
+    AVAILABLE_DRIVER_EMPTY(1804,"可出车司机为空！"),
+
+    /**
      * 成功
      */
     SUCCESS(1, "success"),

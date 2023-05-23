@@ -8,6 +8,8 @@ import com.mashibing.internalcommon.dto.OrderInfo;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
+import com.mashibing.internalcommon.request.PriceRuleIsNewRequest;
+import com.mashibing.internalcommon.response.OrderDriverResponse;
 import com.mashibing.internalcommon.response.TerminalResponse;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
@@ -71,8 +73,10 @@ public class OrderInfoService {
         }
 
         //判断计价规则是否是当前最新计价规则
-        if (!(servicePriceClient.isLatestFareVersion(orderRequest.getFareType(),
-                orderRequest.getFareVersion()).getData())) {
+        PriceRuleIsNewRequest priceRuleIsNewRequest = new PriceRuleIsNewRequest();
+        priceRuleIsNewRequest.setFareType(orderRequest.getFareType());
+        priceRuleIsNewRequest.setFareVersion(orderRequest.getFareVersion());
+        if (!(servicePriceClient.isLatestFareVersion(priceRuleIsNewRequest).getData())) {
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),
                     CommonStatusEnum.PRICE_RULE_CHANGED.getMessage());
         }
@@ -125,7 +129,27 @@ public class OrderInfoService {
         List<TerminalResponse> listResponseResult = null;
         for (Integer radius : radiusList) {
             listResponseResult = serviceMapClient.aroundSearch(center, radius).getData();
-            log.info("在半径为：" + radius + "米范围内搜索车辆！");
+            //进行对象解析
+            if (listResponseResult.size() > 0) {
+                //对于list中每个对象进行解析
+                for (TerminalResponse terminalResponse : listResponseResult) {
+                    Long carId = terminalResponse.getCarId();
+                    String tid = terminalResponse.getTid();
+                    //远程调用service-driver-user查询否有司机可以派送订单
+                    OrderDriverResponse data = serviceDriverUserClient.getDriverByCarId(carId).getData();
+                    if (null == data) {
+
+                    }
+
+
+                }
+
+
+            }
+        }
+
+        if (listResponseResult == null) {
+            log.info("没有车辆可以派发！");
         }
     }
 
