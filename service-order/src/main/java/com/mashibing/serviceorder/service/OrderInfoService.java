@@ -8,10 +8,12 @@ import com.mashibing.internalcommon.dto.OrderInfo;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
+import com.mashibing.internalcommon.response.TerminalResponse;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
+import com.mashibing.serviceorder.remote.ServiceMapClient;
 import com.mashibing.serviceorder.remote.ServicePriceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.omg.CORBA.COMM_FAILURE;
@@ -22,6 +24,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +49,9 @@ public class OrderInfoService {
 
     @Autowired
     private ServiceDriverUserClient serviceDriverUserClient;
+
+    @Autowired
+    private ServiceMapClient serviceMapClient;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -99,6 +105,28 @@ public class OrderInfoService {
         orderInfoMapper.insert(orderInfo);
 
         return ResponseResult.success("");
+    }
+
+    /**
+     * 实时订单派送,2km,4km,6km这种范围进行车辆查询
+     */
+    public void aroundSearchRealTime(OrderInfo orderInfo) {
+        //2km
+        String depLatitude = orderInfo.getDepLatitude();
+        String depLongitude = orderInfo.getDepLongitude();
+        String center = depLatitude + "," + depLongitude;
+
+
+        List<Integer> radiusList = new ArrayList<>();
+        radiusList.add(2000);
+        radiusList.add(4000);
+        radiusList.add(5000);
+
+        List<TerminalResponse> listResponseResult = null;
+        for (Integer radius : radiusList) {
+            listResponseResult = serviceMapClient.aroundSearch(center, radius).getData();
+            log.info("在半径为：" + radius + "米范围内搜索车辆！");
+        }
     }
 
     /**
