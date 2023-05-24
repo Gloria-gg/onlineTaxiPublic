@@ -145,7 +145,18 @@ public class OrderInfoService {
                         continue;
                     }
 
+                    //存在可以派单的司机，则系统直接进行派单，开始补齐orderInfo中缺失的部分
+                    orderInfo.setCarId(carId);
+                    orderInfo.setDriverId(driverId);
+                    orderInfo.setDriverPhone(data.getDriverPhone());
+                    orderInfo.setReceiveOrderCarLatitude(terminalResponse.getLatitude().toString());
+                    orderInfo.setReceiveOrderCarLongitude(terminalResponse.getLongitude().toString());
+                    orderInfo.setReceiveOrderTime(LocalDateTime.now());
+                    orderInfo.setLicenseId(data.getLicenseId());
+                    orderInfo.setVehicleNo(data.getVehicleNo());
+                    orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
 
+                    orderInfoMapper.updateById(orderInfo);
                 }
 
 

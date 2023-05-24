@@ -3,11 +3,9 @@ package com.mashibing.servicedriveruser.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.DriverCarConstants;
-import com.mashibing.internalcommon.dto.DriverCarBindingRelationship;
-import com.mashibing.internalcommon.dto.DriverUser;
-import com.mashibing.internalcommon.dto.DriverUserWorkStatus;
-import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.dto.*;
 import com.mashibing.internalcommon.response.OrderDriverResponse;
+import com.mashibing.servicedriveruser.mapper.CarMapper;
 import com.mashibing.servicedriveruser.mapper.DriverCarBindingRelationshipMapper;
 import com.mashibing.servicedriveruser.mapper.DriverUserMapper;
 import com.mashibing.servicedriveruser.mapper.DriverUserWorkStatusMapper;
@@ -31,6 +29,9 @@ import java.util.Map;
 public class DriverUserService {
     @Autowired
     private DriverUserMapper driverUserMapper;
+
+    @Autowired
+    private CarMapper carMapper;
 
     @Autowired
     private DriverUserWorkStatusMapper driverUserWorkStatusMapper;
@@ -127,14 +128,22 @@ public class DriverUserService {
                     CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getMessage());
         }
 
+        //查询司机信息
         QueryWrapper<DriverUser> queryWrapper2 = new QueryWrapper<>();
         queryWrapper2.eq("id", driverUserWorkStatus.getDriverId());
         DriverUser driverUser = driverUserMapper.selectOne(queryWrapper2);
+
+        //查询车辆信息
+        QueryWrapper<Car> queryWrapper3 = new QueryWrapper<>();
+        queryWrapper3.eq("id", carId);
+        Car car = carMapper.selectOne(queryWrapper3);
 
         OrderDriverResponse orderDriverResponse = new OrderDriverResponse();
         orderDriverResponse.setCarId(carId);
         orderDriverResponse.setDriverId(driverUser.getId());
         orderDriverResponse.setDriverPhone(driverUser.getDriverPhone());
+        orderDriverResponse.setLicenseId(driverUser.getLicenseId());
+        orderDriverResponse.setVehicleNo(car.getVehicleNo());
 
         return ResponseResult.success(orderDriverResponse);
     }

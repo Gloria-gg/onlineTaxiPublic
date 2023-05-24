@@ -1,4 +1,4 @@
-package com.mashibing.servicedriveruser.client;
+package com.mashibing.servicedriveruser.remote;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.TerminalResponse;

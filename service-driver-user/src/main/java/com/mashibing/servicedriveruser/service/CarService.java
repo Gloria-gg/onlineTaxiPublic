@@ -5,7 +5,7 @@ import com.mashibing.internalcommon.dto.Car;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.TerminalResponse;
 import com.mashibing.internalcommon.response.TrackResponse;
-import com.mashibing.servicedriveruser.client.ServiceMapClient;
+import com.mashibing.servicedriveruser.remote.ServiceMapClient;
 import com.mashibing.servicedriveruser.mapper.CarMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

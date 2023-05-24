@@ -1,5 +1,6 @@
 package com.mashibing.internalcommon.response;
 
+import com.sun.tools.javac.api.Formattable;
 import lombok.Data;
 
 /**
@@ -12,4 +13,8 @@ public class TerminalResponse {
     private String tid;
 
     private Long carId;
+
+    private String longitude;
+
+    private String latitude;
 }

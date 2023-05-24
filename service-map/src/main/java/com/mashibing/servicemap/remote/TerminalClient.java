@@ -70,9 +70,16 @@ public class TerminalClient {
             JSONObject object = results.getJSONObject(i);
             long carId = Long.parseLong(object.getString("desc"));
             String tid = object.getString("tid");
+            //再接着获取车辆的实时位置经纬度，后面订单生成需要
+            JSONObject location = object.getJSONObject("location");
+            String longitude = location.getDouble("longitude") + "";
+            String latitude = location.getDouble("latitude") + "";
+
             TerminalResponse terminalResponse = new TerminalResponse();
             terminalResponse.setTid(tid);
             terminalResponse.setCarId(carId);
+            terminalResponse.setLongitude(longitude);
+            terminalResponse.setLatitude(latitude);
             terminalResponseList.add(terminalResponse);
         }
 
