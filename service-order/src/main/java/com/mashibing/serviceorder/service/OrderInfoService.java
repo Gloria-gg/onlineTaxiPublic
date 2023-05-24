@@ -108,7 +108,7 @@ public class OrderInfoService {
     /**
      * 实时订单派送,2km,4km,6km这种范围进行车辆查询
      */
-    public void aroundSearchRealTime(OrderInfo orderInfo) {
+    public synchronized void aroundSearchRealTime(OrderInfo orderInfo) {
         //2km
         String depLatitude = orderInfo.getDepLatitude();
         String depLongitude = orderInfo.getDepLongitude();
@@ -121,6 +121,7 @@ public class OrderInfoService {
         radiusList.add(5000);
 
         List<TerminalResponse> listResponseResult = null;
+        radius:
         for (Integer radius : radiusList) {
             listResponseResult = serviceMapClient.aroundSearch(center, radius).getData();
             //进行对象解析
@@ -133,7 +134,7 @@ public class OrderInfoService {
                     ResponseResult<OrderDriverResponse> driverByCarId = serviceDriverUserClient.getDriverByCarId(carId);
                     if (driverByCarId.getCode() == CommonStatusEnum.DRIVER_CAR_BIND_NOT_EXISTS.getCode()
                             || driverByCarId.getCode() == CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getCode()) {
-                        continue;
+                        continue radius;
                     }
                     log.info("找到了可以出车的司机ID：" + driverByCarId.getData().getDriverId());
 
@@ -142,24 +143,24 @@ public class OrderInfoService {
                     //若司机存在正在进行的订单，那么就不能进行订单派送
                     if (isDriverOrderGoingOn(driverId) > 0) {
                         log.info("可以出车的司机：" + data.getDriverId() + " 正在接送乘客中，所以无法进行新订单的派送！");
-                        continue;
+                        continue radius;
                     }
 
                     //存在可以派单的司机，则系统直接进行派单，开始补齐orderInfo中缺失的部分
                     orderInfo.setCarId(carId);
                     orderInfo.setDriverId(driverId);
                     orderInfo.setDriverPhone(data.getDriverPhone());
-                    orderInfo.setReceiveOrderCarLatitude(terminalResponse.getLatitude().toString());
-                    orderInfo.setReceiveOrderCarLongitude(terminalResponse.getLongitude().toString());
+                    orderInfo.setReceiveOrderCarLatitude(terminalResponse.getLatitude());
+                    orderInfo.setReceiveOrderCarLongitude(terminalResponse.getLongitude());
                     orderInfo.setReceiveOrderTime(LocalDateTime.now());
                     orderInfo.setLicenseId(data.getLicenseId());
                     orderInfo.setVehicleNo(data.getVehicleNo());
                     orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
 
                     orderInfoMapper.updateById(orderInfo);
+
+                    break radius;
                 }
-
-
             }
         }
 
