@@ -11,11 +11,14 @@ import com.mashibing.internalcommon.request.PriceRuleIsNewRequest;
 import com.mashibing.internalcommon.response.OrderDriverResponse;
 import com.mashibing.internalcommon.response.TerminalResponse;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
+import com.mashibing.serviceorder.config.RedisConfig;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
 import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
 import com.mashibing.serviceorder.remote.ServiceMapClient;
 import com.mashibing.serviceorder.remote.ServicePriceClient;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -51,6 +54,9 @@ public class OrderInfoService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     /**
      * 插入用户新增订单
@@ -140,8 +146,15 @@ public class OrderInfoService {
 
                     OrderDriverResponse data = driverByCarId.getData();
                     Long driverId = data.getDriverId();
+
+                    //进行分布式锁设置
+                    String lockKey = (driverId + "").intern();
+                    RLock lock = redissonClient.getLock(lockKey);
+                    lock.lock();
+
                     //若司机存在正在进行的订单，那么就不能进行订单派送
                     if (isDriverOrderGoingOn(driverId) > 0) {
+                        lock.unlock();
                         log.info("可以出车的司机：" + data.getDriverId() + " 正在接送乘客中，所以无法进行新订单的派送！");
                         continue radius;
                     }
@@ -156,8 +169,12 @@ public class OrderInfoService {
                     orderInfo.setLicenseId(data.getLicenseId());
                     orderInfo.setVehicleNo(data.getVehicleNo());
                     orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
+                    orderInfo.setGmtModified(LocalDateTime.now());
 
                     orderInfoMapper.updateById(orderInfo);
+
+                    //释放锁
+                    lock.unlock();
 
                     break radius;
                 }
