@@ -10,10 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mashibing</groupId>
-    <artifactId>sse-driver-client-web</artifactId>
+    <artifactId>service-sse-push</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>sse-driver-client-web</name>
-    <description>simulate driver client from web by using Spring project</description>
+    <name>service-sse-push</name>
+    <description>simulate api from web point of view</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -25,6 +25,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- nacos依赖 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
     </dependencies>
+
 
 </project>
