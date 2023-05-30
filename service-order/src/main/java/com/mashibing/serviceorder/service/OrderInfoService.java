@@ -116,13 +116,32 @@ public class OrderInfoService {
 
         orderInfoMapper.insert(orderInfo);
 
+        //进行实时订单派送,
+        for (int i = 0; i < 2; i++) {
+            int result = aroundSearchRealTime(orderInfo);
+
+            if (result == 1) {
+                break;
+            }
+
+            //若没有找到司机，那么停止20秒，进行下一轮搜索（测试，时间2毫秒）
+            try {
+                Thread.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         return ResponseResult.success("");
     }
 
     /**
      * 实时订单派送,2km,4km,6km这种范围进行车辆查询
      */
-    public synchronized void aroundSearchRealTime(OrderInfo orderInfo) {
+    public int aroundSearchRealTime(OrderInfo orderInfo) {
+        log.info("调用2、4、6搜索周围车辆！");
+        int result = 0;
         //2km
         String depLatitude = orderInfo.getDepLatitude();
         String depLongitude = orderInfo.getDepLongitude();
@@ -143,7 +162,6 @@ public class OrderInfoService {
                 //对于list中每个对象进行解析
                 for (TerminalResponse terminalResponse : listResponseResult) {
                     Long carId = terminalResponse.getCarId();
-                    String tid = terminalResponse.getTid();
                     //远程调用service-driver-user查询否有司机可以派送订单
                     ResponseResult<OrderDriverResponse> driverByCarId = serviceDriverUserClient.getDriverByCarId(carId);
                     if (driverByCarId.getCode() == CommonStatusEnum.DRIVER_CAR_BIND_NOT_EXISTS.getCode()
@@ -218,6 +236,8 @@ public class OrderInfoService {
                     pushRequest2.setContent(passengerContent.toString());
                     serviceSsePushClient.push(pushRequest2);
 
+                    result = 1;
+
                     //释放锁
                     lock.unlock();
 
@@ -225,10 +245,17 @@ public class OrderInfoService {
                 }
             }
         }
+        //若没有成功进行订单派送，那么之前创建的订单状态要设置为：9 （订单取消）
+        if (listResponseResult.size() == 0
+                || listResponseResult == null
+                || orderInfo.getDriverId() == null) {
 
-        if (listResponseResult == null) {
+            orderInfo.setOrderStatus(OrderConstants.CANCEL_ORDER);
+            orderInfoMapper.updateById(orderInfo);
             log.info("没有车辆可以派发！");
         }
+
+        return result;
     }
 
     /**
@@ -281,6 +308,7 @@ public class OrderInfoService {
 
     /**
      * 判断是否是黑名单用户，若不是，那么进行赋值，否则直接返回true
+     * 每个用户使用的设备都有唯一设备标识码，若是使用次数超过2次，说明一台设备多次进行下单，列为黑名单
      *
      * @param deviceCode
      * @return
