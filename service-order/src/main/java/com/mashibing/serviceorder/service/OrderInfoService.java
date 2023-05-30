@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.IdentityConstants;
 import com.mashibing.internalcommon.constant.OrderConstants;
+import com.mashibing.internalcommon.dto.Car;
 import com.mashibing.internalcommon.dto.OrderInfo;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
@@ -196,6 +197,26 @@ public class OrderInfoService {
                     pushRequest.setIdentity(IdentityConstants.DRIVER_IDENTITY);
                     pushRequest.setContent(driverContent.toString());
                     serviceSsePushClient.push(pushRequest);
+
+
+                    //通知乘客端
+                    JSONObject passengerContent = new JSONObject();
+                    passengerContent.put("driverId", driverId);
+                    passengerContent.put("driverPhone", orderInfo.getDriverPhone());
+                    passengerContent.put("vehicleNo", orderInfo.getVehicleNo());
+                    passengerContent.put("receiveOrderCarLongitude", orderInfo.getReceiveOrderCarLongitude());
+                    passengerContent.put("receiveOrderCarLatitude", orderInfo.getReceiveOrderCarLatitude());
+
+                    Car car = serviceDriverUserClient.getCarById(orderInfo.getCarId()).getData();
+                    passengerContent.put("brand", car.getBrand());
+                    passengerContent.put("model", car.getModel());
+                    passengerContent.put("vehicleColor", car.getVehicleColor());
+
+                    PushRequest pushRequest2 = new PushRequest();
+                    pushRequest2.setUserId(orderInfo.getPassengerId());
+                    pushRequest2.setIdentity(IdentityConstants.PASSENGER_IDENTITY);
+                    pushRequest2.setContent(passengerContent.toString());
+                    serviceSsePushClient.push(pushRequest2);
 
                     //释放锁
                     lock.unlock();
