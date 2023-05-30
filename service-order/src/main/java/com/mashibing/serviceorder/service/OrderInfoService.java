@@ -2,12 +2,14 @@ package com.mashibing.serviceorder.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
+import com.mashibing.internalcommon.constant.IdentityConstants;
 import com.mashibing.internalcommon.constant.OrderConstants;
 import com.mashibing.internalcommon.dto.OrderInfo;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.internalcommon.request.PriceRuleIsNewRequest;
+import com.mashibing.internalcommon.request.PushRequest;
 import com.mashibing.internalcommon.response.OrderDriverResponse;
 import com.mashibing.internalcommon.response.TerminalResponse;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
@@ -16,7 +18,9 @@ import com.mashibing.serviceorder.mapper.OrderInfoMapper;
 import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
 import com.mashibing.serviceorder.remote.ServiceMapClient;
 import com.mashibing.serviceorder.remote.ServicePriceClient;
+import com.mashibing.serviceorder.remote.ServiceSsePushClient;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
@@ -51,6 +55,9 @@ public class OrderInfoService {
 
     @Autowired
     private ServiceMapClient serviceMapClient;
+
+    @Autowired
+    private ServiceSsePushClient serviceSsePushClient;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -173,6 +180,23 @@ public class OrderInfoService {
 
                     orderInfoMapper.updateById(orderInfo);
 
+                    //通知司机端
+                    JSONObject driverContent = new JSONObject();
+                    driverContent.put("passengerId", orderInfo.getPassengerId());
+                    driverContent.put("passengerPhone", orderInfo.getPassengerPhone());
+                    driverContent.put("departure", orderInfo.getDeparture());
+                    driverContent.put("depLongitude", orderInfo.getDepLongitude());
+                    driverContent.put("depLatitude", orderInfo.getDepLatitude());
+                    driverContent.put("destination", orderInfo.getDestination());
+                    driverContent.put("destLongitude", orderInfo.getDestLongitude());
+                    driverContent.put("destLatitude", orderInfo.getDestLatitude());
+
+                    PushRequest pushRequest = new PushRequest();
+                    pushRequest.setUserId(driverId);
+                    pushRequest.setIdentity(IdentityConstants.DRIVER_IDENTITY);
+                    pushRequest.setContent(driverContent.toString());
+                    serviceSsePushClient.push(pushRequest);
+
                     //释放锁
                     lock.unlock();
 
@@ -256,6 +280,12 @@ public class OrderInfoService {
         return false;
     }
 
+    /**
+     * 判断计价规则是否存在
+     *
+     * @param orderRequest
+     * @return
+     */
     public Boolean ifPriceRuleExists(OrderRequest orderRequest) {
         String cityCode = orderRequest.getAddress();
         String vehicleType = orderRequest.getVehicleType();
