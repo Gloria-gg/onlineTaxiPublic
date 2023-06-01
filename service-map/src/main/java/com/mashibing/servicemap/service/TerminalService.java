@@ -2,6 +2,7 @@ package com.mashibing.servicemap.service;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.TerminalResponse;
+import com.mashibing.internalcommon.response.TrSearchResponse;
 import com.mashibing.servicemap.remote.TerminalClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class TerminalService {
         return terminalClient.aroundSearch(center, radius);
     }
 
-    public ResponseResult trSearch(String tid, Long startTime, Long endTime) {
+    public ResponseResult<TrSearchResponse> trSearch(String tid, Long startTime, Long endTime) {
         return terminalClient.trSearch(tid, startTime, endTime);
     }
 }

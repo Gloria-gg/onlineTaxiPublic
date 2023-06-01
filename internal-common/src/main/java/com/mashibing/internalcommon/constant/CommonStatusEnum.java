@@ -109,7 +109,12 @@ public enum CommonStatusEnum {
     /**
      * 可出车司机为空
      */
-    AVAILABLE_DRIVER_EMPTY(1804,"可出车司机为空！"),
+    AVAILABLE_DRIVER_EMPTY(1804, "可出车司机为空！"),
+
+    /**
+     * 通过输入轨迹点计算行驶距离和时间失败
+     */
+    TRSEARCH_COUNTS_EMPTY(1900, "没有轨迹点可以计算行驶距离和时间！"),
 
     /**
      * 成功

@@ -1,8 +1,10 @@
 package com.mashibing.servicemap.remote;
 
+import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.MapConfigConstants;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.TerminalResponse;
+import com.mashibing.internalcommon.response.TrSearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -95,13 +97,37 @@ public class TerminalClient {
      * @param endTime
      * @return
      */
-    public ResponseResult trSearch(String tid, Long startTime, Long endTime) {
+    public ResponseResult<TrSearchResponse> trSearch(String tid, Long startTime, Long endTime) {
         String url = String.format(MapConfigConstants.TR_SEARCH_URL, amapKey, amapSid, tid, startTime, endTime);
         ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(url, null, String.class);
         log.info("高德响应接口是：" + url);
         log.info("高德响应结果是：" + stringResponseEntity.getBody());
 
-        return null;
+        //开始解析获得的string对象
+        JSONObject jsonObject = JSONObject.fromObject(stringResponseEntity.getBody());
+        JSONObject data = jsonObject.getJSONObject("data");
+        int counts = data.getInt("counts");
+        //根据获得的counts数进行轨迹解析
+        if (counts == 0) {
+            return ResponseResult.fail(CommonStatusEnum.TRSEARCH_COUNTS_EMPTY.getCode(),
+                    CommonStatusEnum.TRSEARCH_COUNTS_EMPTY.getMessage());
+        }
+        JSONArray tracks = data.getJSONArray("tracks");
+        Long driveMile = 0L;
+        Long driveTime = 0L;
+        TrSearchResponse response = new TrSearchResponse();
+        for (int i = 0; i < tracks.size(); i++) {
+            JSONObject object = tracks.getJSONObject(i);
+            long distance = object.getLong("distance");
+            long time = object.getLong("time");
 
+            driveMile += distance;
+            driveTime += time / (1000 * 60);
+        }
+
+        response.setDriveMile(driveMile);
+        response.setDriveTime(driveTime);
+
+        return ResponseResult.success(response);
     }
 }
