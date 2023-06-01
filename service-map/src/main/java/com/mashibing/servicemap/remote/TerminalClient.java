@@ -85,4 +85,23 @@ public class TerminalClient {
 
         return ResponseResult.success(terminalResponseList);
     }
+
+
+    /**
+     * 远程调用高德api进行一系列轨迹点形成的时长以及距离获取
+     *
+     * @param tid
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public ResponseResult trSearch(String tid, Long startTime, Long endTime) {
+        String url = String.format(MapConfigConstants.TR_SEARCH_URL, amapKey, amapSid, tid, startTime, endTime);
+        ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(url, null, String.class);
+        log.info("高德响应接口是：" + url);
+        log.info("高德响应结果是：" + stringResponseEntity.getBody());
+
+        return null;
+
+    }
 }

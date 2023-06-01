@@ -25,4 +25,8 @@ public class TerminalService {
     public ResponseResult<List<TerminalResponse>> aroundSearch(String center, Integer radius) {
         return terminalClient.aroundSearch(center, radius);
     }
+
+    public ResponseResult trSearch(String tid, Long startTime, Long endTime) {
+        return terminalClient.trSearch(tid, startTime, endTime);
+    }
 }

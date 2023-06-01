@@ -98,4 +98,9 @@ public class MapConfigConstants {
      * 根据中心点和半径进行周围车辆搜索url
      */
     public static final String AROUND_SEARCH_URL = "https://tsapi.amap.com/v1/track/terminal/aroundsearch?key=%s&sid=%s&center=%s&radius=%s";
+
+    /**
+     * 根据轨迹点各项信息进行行程时长以及距离获取
+     */
+    public static final String TR_SEARCH_URL = "https://tsapi.amap.com/v1/track/terminal/trsearch?key=%s&sid=%s&tid=%s&starttime=%s&endtime=%s";
 }
