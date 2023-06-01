@@ -5,6 +5,7 @@ import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.serviceorder.service.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RRateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +47,17 @@ public class OrderController {
     @PostMapping("/to-pick-up-passenger")
     public ResponseResult toPickUpPassenger(@RequestBody OrderRequest orderRequest) {
         return orderInfoService.toPickUpPassenger(orderRequest);
+    }
+
+    /**
+     * 司机接送乘客到达目的地订单状态修改
+     *
+     * @param orderRequest
+     * @return
+     */
+    @PostMapping("/arrived-departure")
+    public ResponseResult arrivedDeparture(@RequestBody OrderRequest orderRequest) {
+        return orderInfoService.arrivedDeparture(orderRequest);
     }
 
 

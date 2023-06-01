@@ -374,4 +374,26 @@ public class OrderInfoService {
         return ResponseResult.success();
     }
 
+    /**
+     * 修改乘客到达目的地状态及对应订单参数补齐
+     *
+     * @param orderRequest
+     * @return
+     */
+    public ResponseResult arrivedDeparture(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", orderId);
+        OrderInfo orderInfo = orderInfoMapper.selectOne(queryWrapper);
+
+        orderInfo.setOrderStatus(OrderConstants.DRIVER_ARRIVED_DEPARTURE);
+        orderInfo.setDriverArrivedDepartureTime(LocalDateTime.now());
+        orderInfo.setGmtModified(LocalDateTime.now());
+
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success();
+    }
+
 }
