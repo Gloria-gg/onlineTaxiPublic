@@ -115,6 +115,8 @@ public class OrderInfoService {
         LocalDateTime now = LocalDateTime.now();
         orderInfo.setGmtCreate(now);
         orderInfo.setGmtModified(now);
+        orderInfo.setOrderTime(LocalDateTime.now());
+        orderInfo.setDepartTime(LocalDateTime.now());
 
         orderInfoMapper.insert(orderInfo);
 
