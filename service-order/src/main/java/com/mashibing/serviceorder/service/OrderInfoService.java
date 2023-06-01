@@ -13,6 +13,7 @@ import com.mashibing.internalcommon.request.PriceRuleIsNewRequest;
 import com.mashibing.internalcommon.request.PushRequest;
 import com.mashibing.internalcommon.response.OrderDriverResponse;
 import com.mashibing.internalcommon.response.TerminalResponse;
+import com.mashibing.internalcommon.response.TrSearchResponse;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.config.RedisConfig;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
@@ -30,6 +31,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -438,9 +440,14 @@ public class OrderInfoService {
         orderInfo.setPassengerGetoffTime(LocalDateTime.now());
         orderInfo.setPassengerGetoffLongitude(orderRequest.getPassengerGetoffLongitude());
         orderInfo.setPassengerGetoffLatitude(orderRequest.getPassengerGetoffLatitude());
-        //更新行驶行程数以及行驶时间
+        //更新行驶行程数以及行驶时间，远程调用service-map
+        String tid = serviceDriverUserClient.getCarById(orderInfo.getCarId()).getData().getTid();
+        TrSearchResponse trSearchResponse = serviceMapClient.trSearch(tid,
+                orderInfo.getPickUpPassengerTime().toInstant(ZoneOffset.of("+8")).toEpochMilli(),
+                LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli()).getData();
 
-
+        orderInfo.setDriveTime(trSearchResponse.getDriveTime());
+        orderInfo.setDriveMile(trSearchResponse.getDriveMile());
 
         orderInfoMapper.updateById(orderInfo);
 

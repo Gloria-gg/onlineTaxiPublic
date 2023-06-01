@@ -41,7 +41,7 @@ public class TerminalController {
      * @param endtime
      * @return
      */
-    @GetMapping("/trsearch")
+    @PostMapping("/trsearch")
     public ResponseResult<TrSearchResponse> trSearch(String tid, Long starttime, Long endtime) {
         return terminalService.trSearch(tid, starttime, endtime);
     }
