@@ -16,7 +16,7 @@ public class DirectionResponse {
     private Integer distance;
 
     /**
-     * 时长：分钟
+     * 时长：秒
      */
     private Integer duration;
 }

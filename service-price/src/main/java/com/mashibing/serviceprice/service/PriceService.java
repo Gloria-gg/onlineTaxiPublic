@@ -25,7 +25,7 @@ import java.util.Map;
  */
 @Service
 @Slf4j
-public class ForecastPriceService {
+public class PriceService {
 
     @Autowired
     private ServiceMapClient serviceMapClient;
@@ -33,9 +33,9 @@ public class ForecastPriceService {
     @Autowired
     private PriceRuleMapper priceRuleMapper;
 
-    public ResponseResult forecastPrice(String depLongitude, String depLatitude,
-                                        String destLongitude, String destLatitude,
-                                        String cityCode, String vehicleType) {
+    public ResponseResult<ForecastPriceResponse> forecastPrice(String depLongitude, String depLatitude,
+                                                               String destLongitude, String destLatitude,
+                                                               String cityCode, String vehicleType) {
 
         ForecastPriceDTO forecastPriceDTO = new ForecastPriceDTO();
         forecastPriceDTO.setDepLongitude(depLongitude);
@@ -72,6 +72,37 @@ public class ForecastPriceService {
         forecastPriceResponse.setFareVersion(priceRule.getFareVersion());
 
         return ResponseResult.success(forecastPriceResponse);
+    }
+
+    /**
+     * 根据城市计价规则，以及距离和时间，计算最终价格
+     *
+     * @param distance
+     * @param duration
+     * @param cityCode
+     * @param vehicleType
+     * @return
+     */
+    public ResponseResult calculatePrice(Integer distance, Integer duration, String cityCode, String vehicleType) {
+        //获取计价规则，获取要是最新的
+        QueryWrapper<PriceRule> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("city_code", cityCode);
+        queryWrapper.eq("vehicle_type", vehicleType);
+        queryWrapper.orderByDesc("fare_version");
+        List<PriceRule> priceRules = priceRuleMapper.selectList(queryWrapper);
+
+
+        //不能没有计价规则
+        if (priceRules.size() == 0) {
+            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_EMPTY.getCode(),
+                    CommonStatusEnum.PRICE_RULE_EMPTY.getMessage());
+        }
+
+        PriceRule priceRule = priceRules.get(0);
+        Double finalPrice = getPrice(distance, duration * 60, priceRule);
+        log.info("获取的最新的计价规则是：" + priceRule.toString());
+
+        return ResponseResult.success(finalPrice);
     }
 
     /**

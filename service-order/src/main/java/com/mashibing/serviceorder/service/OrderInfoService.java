@@ -176,6 +176,17 @@ public class OrderInfoService {
 
                     OrderDriverResponse data = driverByCarId.getData();
                     Long driverId = data.getDriverId();
+                    String driverPhone = data.getDriverPhone();
+                    String licenseId = data.getLicenseId();
+                    String vehicleNo = data.getVehicleNo();
+                    String vehicleTypeFromCar = data.getVehicleType();
+
+                    //判断车型是否符合
+                    String vehicleTypeFromOrder = orderInfo.getVehicleType();
+                    if (!vehicleTypeFromCar.trim().equals(vehicleTypeFromOrder.trim())) {
+                        log.info("车型不相符！");
+                        continue;
+                    }
 
                     //进行分布式锁设置
                     String lockKey = (driverId + "").intern();
@@ -192,12 +203,12 @@ public class OrderInfoService {
                     //存在可以派单的司机，则系统直接进行派单，开始补齐orderInfo中缺失的部分
                     orderInfo.setCarId(carId);
                     orderInfo.setDriverId(driverId);
-                    orderInfo.setDriverPhone(data.getDriverPhone());
+                    orderInfo.setDriverPhone(driverPhone);
                     orderInfo.setReceiveOrderCarLatitude(terminalResponse.getLatitude());
                     orderInfo.setReceiveOrderCarLongitude(terminalResponse.getLongitude());
                     orderInfo.setReceiveOrderTime(LocalDateTime.now());
-                    orderInfo.setLicenseId(data.getLicenseId());
-                    orderInfo.setVehicleNo(data.getVehicleNo());
+                    orderInfo.setLicenseId(licenseId);
+                    orderInfo.setVehicleNo(vehicleNo);
                     orderInfo.setOrderStatus(OrderConstants.DRIVER_RECEIVE_ORDER);
                     orderInfo.setGmtModified(LocalDateTime.now());
 
