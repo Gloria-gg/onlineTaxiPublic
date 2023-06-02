@@ -39,7 +39,7 @@ public class ForecastPriceController {
     }
 
     @PostMapping("/calculate-price")
-    public ResponseResult calculatePrice(@RequestParam Integer distance,
+    public ResponseResult<Double> calculatePrice(@RequestParam Integer distance,
                                          @RequestParam Integer duration,
                                          @RequestParam String cityCode,
                                          @RequestParam String vehicleType) {

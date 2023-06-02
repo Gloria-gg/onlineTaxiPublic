@@ -462,6 +462,14 @@ public class OrderInfoService {
         orderInfo.setDriveTime(trSearchResponse.getDriveTime());
         orderInfo.setDriveMile(trSearchResponse.getDriveMile());
 
+        //根据行驶时间以及里程数进行价格计算
+        Double finalPrice = servicePriceClient.calculatePrice(trSearchResponse.getDriveMile().intValue(),
+                trSearchResponse.getDriveTime().intValue(),
+                orderInfo.getAddress(),
+                orderInfo.getVehicleType()).getData();
+
+        orderInfo.setPrice(finalPrice);
+
         orderInfoMapper.updateById(orderInfo);
 
         return ResponseResult.success();
