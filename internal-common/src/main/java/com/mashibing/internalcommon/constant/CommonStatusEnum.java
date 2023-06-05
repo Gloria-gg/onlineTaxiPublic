@@ -112,9 +112,16 @@ public enum CommonStatusEnum {
     AVAILABLE_DRIVER_EMPTY(1804, "可出车司机为空！"),
 
     /**
+     * 订单取消失败
+     */
+    ORDER_CANCEL_ERROR(1805, "订单取消失败！"),
+
+
+    /**
      * 通过输入轨迹点计算行驶距离和时间失败
      */
     TRSEARCH_COUNTS_EMPTY(1900, "没有轨迹点可以计算行驶距离和时间！"),
+
 
     /**
      * 成功

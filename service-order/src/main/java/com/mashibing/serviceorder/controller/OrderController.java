@@ -90,4 +90,16 @@ public class OrderController {
         return orderInfoService.pay(orderRequest);
     }
 
+
+    /**
+     * 进行订单取消操作
+     *
+     * @param orderId
+     * @param identity
+     * @return
+     */
+    @PostMapping("/cancel")
+    public ResponseResult cancel(@RequestParam Long orderId, @RequestParam String identity) {
+        return orderInfoService.cancel(orderId, identity);
+    }
 }

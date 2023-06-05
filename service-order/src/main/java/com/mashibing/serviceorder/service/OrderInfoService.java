@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -492,6 +493,98 @@ public class OrderInfoService {
         orderInfoMapper.updateById(orderInfo);
 
         return ResponseResult.success();
+    }
+
+    /**
+     * 进行订单取消
+     *
+     * @param orderId
+     * @param identity
+     * @return
+     */
+    public ResponseResult cancel(Long orderId, String identity) {
+        //查询订单当前状态
+        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+        Integer orderStatus = orderInfo.getOrderStatus();
+
+        LocalDateTime cancelTime = LocalDateTime.now();
+        Integer cancelTypeCode = null;
+
+        //正常取消
+        int cancelType = 1;
+
+        //进行订单状态修改
+        //乘客需要取消订单
+        if (identity.trim().equals(IdentityConstants.PASSENGER_IDENTITY)) {
+            switch (orderStatus) {
+                //订单开始
+                case OrderConstants.ORDER_START:
+                    cancelTypeCode = OrderConstants.CANCEL_PASSENGER_BEFORE;
+                    break;
+                //司机开始接单阶段
+                case OrderConstants.DRIVER_RECEIVE_ORDER:
+                    LocalDateTime receiveOrderTime = orderInfo.getReceiveOrderTime();
+                    long between = ChronoUnit.MINUTES.between(receiveOrderTime,cancelTime);
+                    //若在司机接单一分钟外才取消，那么属于乘客违规取消
+                    if (between > 1) {
+                        cancelTypeCode = OrderConstants.CANCEL_PASSENGER_ILLEGAL;
+                    } else {
+                        cancelTypeCode = OrderConstants.CANCEL_PASSENGER_BEFORE;
+                    }
+                    break;
+                case OrderConstants.DRIVER_TO_PICK_UP_PASSENGER:
+                    cancelTypeCode = OrderConstants.CANCEL_PASSENGER_ILLEGAL;
+                    break;
+                case OrderConstants.DRIVER_ARRIVED_DEPARTURE:
+                    cancelTypeCode = OrderConstants.CANCEL_PASSENGER_ILLEGAL;
+                    break;
+                default:
+                    log.info("乘客取消订单失败！");
+                    cancelType = 0;
+                    break;
+            }
+        }
+
+
+        //司机需要取消订单
+        if (identity.trim().equals(IdentityConstants.DRIVER_IDENTITY)) {
+            switch (orderStatus) {
+
+                case OrderConstants.DRIVER_RECEIVE_ORDER:
+                case OrderConstants.DRIVER_TO_PICK_UP_PASSENGER:
+                case OrderConstants.DRIVER_ARRIVED_DEPARTURE:
+                    LocalDateTime receiveOrderTime = orderInfo.getReceiveOrderTime();
+                    long between = ChronoUnit.MINUTES.between(receiveOrderTime,cancelTime);
+                    //若在司机接单一分钟外才取消，那么属于司机违规取消
+                    if (between > 1) {
+                        cancelTypeCode = OrderConstants.CANCEL_DRIVER_ILLEGAL;
+                    } else {
+                        cancelTypeCode = OrderConstants.CANCEL_DRIVER_BEFORE;
+                    }
+                    break;
+                default:
+                    log.info("司机取消订单失败！");
+                    cancelType = 0;
+                    break;
+            }
+
+        }
+
+        if (cancelType == 0) {
+            return ResponseResult.fail(CommonStatusEnum.ORDER_CANCEL_ERROR.getCode(),
+                    CommonStatusEnum.ORDER_CANCEL_ERROR.getMessage());
+        }
+
+        orderInfo.setCancelTime(cancelTime);
+        orderInfo.setCancelOperator(Integer.parseInt(identity));
+        orderInfo.setCancelTypeCode(cancelTypeCode);
+        orderInfo.setGmtModified(LocalDateTime.now());
+        orderInfo.setOrderStatus(OrderConstants.CANCEL_ORDER);
+
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success();
+
     }
 
 }
