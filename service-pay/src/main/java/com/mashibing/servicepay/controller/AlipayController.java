@@ -1,8 +1,10 @@
-package com.mashibing.servicepay;
+package com.mashibing.servicepay.controller;
 
 import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.payment.page.models.AlipayTradePagePayResponse;
+import com.mashibing.servicepay.service.AlipayService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +25,9 @@ import java.util.Map;
 @ResponseBody
 @Slf4j
 public class AlipayController {
+
+    @Autowired
+    private AlipayService alipayService;
 
     /**
      * 进行支付,跳出支付页面进行付款
@@ -72,10 +77,12 @@ public class AlipayController {
             try {
                 if (Factory.Payment.Common().verifyNotify(param)) {
                     log.info("支付宝验证通过！");
-                    log.info("下面显示回调出来的参数：");
-                    for (String name : param.keySet()) {
-                        log.info(name + " : " + param.get(name));
-                    }
+
+                    //进行远程调用service-order订单状态修改
+                    String outTradeNo = param.get("out_trade_no");
+                    Long orderId = Long.parseLong(outTradeNo);
+                    alipayService.pay(orderId);
+
                 } else {
                     log.info("支付宝验证不通过！");
                 }

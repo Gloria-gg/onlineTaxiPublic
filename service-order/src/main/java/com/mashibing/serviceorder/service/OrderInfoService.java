@@ -476,4 +476,22 @@ public class OrderInfoService {
 
     }
 
+    /**
+     * 更改订单状态为：支付成功
+     *
+     * @param orderRequest
+     * @return
+     */
+    public ResponseResult pay(OrderRequest orderRequest) {
+        Long orderId = orderRequest.getOrderId();
+
+        OrderInfo orderInfo = orderInfoMapper.selectById(orderId);
+        orderInfo.setOrderStatus(OrderConstants.SUCCESS_PAY);
+        orderInfo.setGmtModified(LocalDateTime.now());
+
+        orderInfoMapper.updateById(orderInfo);
+
+        return ResponseResult.success();
+    }
+
 }

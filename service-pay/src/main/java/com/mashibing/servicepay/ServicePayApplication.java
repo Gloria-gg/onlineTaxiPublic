@@ -1,9 +1,9 @@
 package com.mashibing.servicepay;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * @Author: Gloria
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @Date: Created in 10:38 AM 6/5/23
  */
 @SpringBootApplication
-@RestController
-@Slf4j
+@EnableDiscoveryClient
+@EnableFeignClients
 public class ServicePayApplication {
     public static void main(String[] args) {
         SpringApplication.run(ServicePayApplication.class, args);

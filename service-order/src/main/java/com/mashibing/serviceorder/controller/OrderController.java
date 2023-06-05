@@ -7,10 +7,7 @@ import com.mashibing.serviceorder.service.OrderInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RRateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sun.jvm.hotspot.memory.HeapBlock;
 
 import javax.servlet.http.HttpServletRequest;
@@ -80,6 +77,17 @@ public class OrderController {
     @PostMapping("/passenger-get-off")
     public ResponseResult passengerGetOff(@RequestBody OrderRequest orderRequest) {
         return orderInfoService.passengerGetOff(orderRequest);
+    }
+
+    /**
+     * 付款成功，修改订单状态为成功付款
+     *
+     * @param orderRequest
+     * @return
+     */
+    @PostMapping("/pay")
+    public ResponseResult pay(@RequestBody OrderRequest orderRequest) {
+        return orderInfoService.pay(orderRequest);
     }
 
 }
