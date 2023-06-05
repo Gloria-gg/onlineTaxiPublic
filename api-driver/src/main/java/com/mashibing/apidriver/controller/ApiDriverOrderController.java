@@ -4,10 +4,7 @@ import com.mashibing.apidriver.service.ApiDriverOrderService;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author: Gloria
@@ -63,6 +60,11 @@ public class ApiDriverOrderController {
     @PostMapping("/passenger-get-off")
     public ResponseResult passengerGetOff(@RequestBody OrderRequest orderRequest) {
         return apiDriverOrderService.passengerGetOff(orderRequest);
+    }
+
+    @PostMapping("/cancel")
+    public ResponseResult cancel(@RequestParam Long orderId) {
+        return apiDriverOrderService.cancel(orderId);
     }
 
 }
