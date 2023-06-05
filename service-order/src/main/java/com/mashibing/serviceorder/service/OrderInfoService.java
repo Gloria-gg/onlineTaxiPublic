@@ -129,14 +129,19 @@ public class OrderInfoService {
                 break;
             }
 
-            //若没有找到司机，那么停止20秒，进行下一轮搜索（测试，时间2毫秒）
-            try {
-                Thread.sleep(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (i == 1) {
+                //两轮循环结束之后，若是还没有司机接单，那么设置订单状态是0：订单失效
+                orderInfo.setOrderStatus(OrderConstants.ORDER_INVALID);
+                orderInfoMapper.updateById(orderInfo);
+            } else {
+                //若没有找到司机，那么停止20秒，进行下一轮搜索（测试，时间2毫秒）
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
 
         return ResponseResult.success("");
     }
@@ -261,15 +266,15 @@ public class OrderInfoService {
                 }
             }
         }
-        //若没有成功进行订单派送，那么之前创建的订单状态要设置为：9 （订单取消）
-        if (listResponseResult.size() == 0
-                || listResponseResult == null
-                || orderInfo.getDriverId() == null) {
-
-            orderInfo.setOrderStatus(OrderConstants.CANCEL_ORDER);
-            orderInfoMapper.updateById(orderInfo);
-            log.info("没有车辆可以派发！");
-        }
+//        //若没有成功进行订单派送，那么之前创建的订单状态要设置为：9 （订单取消）
+//        if (listResponseResult.size() == 0
+//                || listResponseResult == null
+//                || orderInfo.getDriverId() == null) {
+//
+//            orderInfo.setOrderStatus(OrderConstants.CANCEL_ORDER);
+//            orderInfoMapper.updateById(orderInfo);
+//            log.info("没有车辆可以派发！");
+//        }
 
         return result;
     }
@@ -320,7 +325,6 @@ public class OrderInfoService {
 
         return validOrderNum;
     }
-
 
     /**
      * 判断是否是黑名单用户，若不是，那么进行赋值，否则直接返回true
@@ -524,7 +528,7 @@ public class OrderInfoService {
                 //司机开始接单阶段
                 case OrderConstants.DRIVER_RECEIVE_ORDER:
                     LocalDateTime receiveOrderTime = orderInfo.getReceiveOrderTime();
-                    long between = ChronoUnit.MINUTES.between(receiveOrderTime,cancelTime);
+                    long between = ChronoUnit.MINUTES.between(receiveOrderTime, cancelTime);
                     //若在司机接单一分钟外才取消，那么属于乘客违规取消
                     if (between > 1) {
                         cancelTypeCode = OrderConstants.CANCEL_PASSENGER_ILLEGAL;
@@ -554,7 +558,7 @@ public class OrderInfoService {
                 case OrderConstants.DRIVER_TO_PICK_UP_PASSENGER:
                 case OrderConstants.DRIVER_ARRIVED_DEPARTURE:
                     LocalDateTime receiveOrderTime = orderInfo.getReceiveOrderTime();
-                    long between = ChronoUnit.MINUTES.between(receiveOrderTime,cancelTime);
+                    long between = ChronoUnit.MINUTES.between(receiveOrderTime, cancelTime);
                     //若在司机接单一分钟外才取消，那么属于司机违规取消
                     if (between > 1) {
                         cancelTypeCode = OrderConstants.CANCEL_DRIVER_ILLEGAL;
